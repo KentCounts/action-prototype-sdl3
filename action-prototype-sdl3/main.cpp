@@ -22,8 +22,22 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    // Keep window open for 5 seconds
-    SDL_Delay(5000);
+    bool running = true;
+    SDL_Event event;
+
+    while (running)
+    {
+        // handle all internal events
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+            case SDL_EVENT_QUIT:
+                running = false;
+                break;
+            }
+        }
+    }
 
     SDL_DestroyWindow(window);
     SDL_Quit();

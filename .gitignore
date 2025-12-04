@@ -1,0 +1,35 @@
+# Visual Studio cache and temp folders
+.vs/
+*.user
+*.suo
+
+# Build output
+Debug/
+Release/
+x64/
+bin/
+obj/
+*.obj
+*.ilk
+*.pdb
+*.idb
+
+# Visual Studio database
+*.VC.opendb
+*.VC.db
+
+# Intermediate files
+*.ipch
+*.tlog
+
+# Temporary files
+*.log
+*.tmp
+
+# SDL build products (optional)
+*.dll
+
+# CMake (if added later)
+CMakeFiles/
+CMakeCache.txt
+build/

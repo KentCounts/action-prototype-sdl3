@@ -11,4 +11,6 @@ public:
 private:
     SDL_FRect rect;
     float speed;
+    float velocityX = 0.0f;
+    float velocityY = 0.0f;
 };

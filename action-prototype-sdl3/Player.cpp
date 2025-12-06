@@ -11,18 +11,34 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight)
 {
     const bool* keys = SDL_GetKeyboardState(nullptr);
 
+    float DeltaX = 0.0f;
+    float DeltaY = 0.0f;
+
     // movement conditionals
     if (keys[SDL_SCANCODE_W] || keys[SDL_SCANCODE_UP])
-        rect.y -= speed * DeltaTime;
+        DeltaY -= 1.0f;
 
     if (keys[SDL_SCANCODE_S] || keys[SDL_SCANCODE_DOWN])
-        rect.y += speed * DeltaTime;
+        DeltaY += 1.0f;
 
     if (keys[SDL_SCANCODE_A] || keys[SDL_SCANCODE_LEFT])
-        rect.x -= speed * DeltaTime;
+        DeltaX -= 1.0f;
 
     if (keys[SDL_SCANCODE_D] || keys[SDL_SCANCODE_RIGHT])
-        rect.x += speed * DeltaTime;
+        DeltaX += 1.0f;
+
+    float length = SDL_sqrtf(DeltaX * DeltaX + DeltaY * DeltaY);
+
+    if (length > 0.0f)
+    {
+        DeltaX /= length;
+        DeltaY /= length;
+    }
+
+    // new movement code
+    rect.x += DeltaX * speed * DeltaTime;
+    rect.y += DeltaY * speed * DeltaTime;
+
 
     // clamp movement to bounds of window
     if (rect.x < 0) rect.x = 0;

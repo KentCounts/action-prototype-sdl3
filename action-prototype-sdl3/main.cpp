@@ -1,6 +1,12 @@
 #include <SDL3/SDL.h>
 #include <iostream>
+#include <vector>
+#include <SDL3/SDL_keyboard.h>
 #include "Player.h"
+#include "Bullet.h"
+
+std::vector<Bullet> Bullets;
+
 
 int main(int argc, char* argv[])
 {
@@ -16,6 +22,7 @@ int main(int argc, char* argv[])
         800, 600,
         SDL_WINDOW_RESIZABLE
     );
+    
   
     // Create a GPU renderer
     SDL_Renderer* renderer = SDL_CreateRenderer(window, NULL);
@@ -28,7 +35,6 @@ int main(int argc, char* argv[])
 
     Player player(100.0f, 100.0f, 50.0f, 50.0f, 300.0f);
 
-
     if (!window) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
@@ -40,11 +46,21 @@ int main(int argc, char* argv[])
 
     Uint64 LastTime = SDL_GetTicks();
 
+    // bullet cool down
+    float fireCooldown = 0.0f;
+    const float fireRate = 1.0f / 3.0f;
+
+
     while (running)
     {
         Uint64 Current = SDL_GetTicks();
         float DeltaTime = (Current - LastTime) / 1000.0f;
         LastTime = Current;
+        if (fireCooldown > 0)
+        {
+            fireCooldown -= DeltaTime;
+        }
+
 
         // handle all internal events
         while (SDL_PollEvent(&event))
@@ -57,11 +73,48 @@ int main(int argc, char* argv[])
             }
         }
 
+        // keyboard stuff
+        const bool* keys = SDL_GetKeyboardState(nullptr);
+
+        if (keys[SDL_SCANCODE_SPACE] && fireCooldown <= 0.0f)
+        {
+            // mouse position
+            float mouseX, mouseY;
+            SDL_GetMouseState(&mouseX, &mouseY);
+
+            // player position
+            float PlayerX = player.getXCenter();
+            float PlayerY = player.getYCenter();
+
+            //direction towards mouse
+            float DirectionX = mouseX - PlayerX;
+            float DirectionY = mouseY - PlayerY;
+
+            Bullets.emplace_back(PlayerX, PlayerY, DirectionX, DirectionY, 500.0f);
+
+            fireCooldown = fireRate;
+        }
+
         // render loop
         int windowWidth, windowHeight;
         SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
+        // update player
         player.update(DeltaTime, windowWidth, windowHeight);
+
+        //update bullets
+        for (auto& b : Bullets)
+        {
+            b.update(DeltaTime);
+        }
+
+        // remove bullets off-screen
+        Bullets.erase(
+            std::remove_if(Bullets.begin(), Bullets.end(),
+                [&](const Bullet& b) {return b.isOffScreen(windowWidth, windowHeight); }),
+            Bullets.end()
+        );
+
         
         // black screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -69,6 +122,17 @@ int main(int argc, char* argv[])
 
         // player rendering
         player.render(renderer);
+
+        // bullet render
+        for (auto& b : Bullets)
+            b.render(renderer);
+
+
+
+        // score board render
+        SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f  };
+        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 200);
+        SDL_RenderFillRect(renderer, &Scoreboard);
 
         // Present the window thing?
         SDL_RenderPresent(renderer);

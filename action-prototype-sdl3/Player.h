@@ -8,6 +8,10 @@ public:
     void update(float DeltaTime, int windowWidth, int windowHeight);
     void render(SDL_Renderer* renderer);
 
+    float getXCenter() const { return rect.x + rect.w / 2; }
+    float getYCenter() const { return rect.y + rect.h / 2; }
+
+
 private:
     SDL_FRect rect;
     float speed;

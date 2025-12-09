@@ -4,6 +4,7 @@
 #include <SDL3/SDL_keyboard.h>
 #include "Player.h"
 #include "Bullet.h"
+#include <SDL3_image/SDL_image.h>
 
 std::vector<Bullet> Bullets;
 
@@ -33,7 +34,8 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    Player player(100.0f, 100.0f, 50.0f, 50.0f, 300.0f);
+    Player player(100.0f, 100.0f, 96.0f, 96.0f, 300.0f);
+    player.LoadTexture(renderer, "assets/ship.png");
 
     if (!window) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
@@ -76,19 +78,20 @@ int main(int argc, char* argv[])
         // keyboard stuff
         const bool* keys = SDL_GetKeyboardState(nullptr);
 
+        // Mouse stuff
+        float MouseX, MouseY;
+        SDL_GetMouseState(&MouseX, &MouseY);
+
         if (keys[SDL_SCANCODE_SPACE] && fireCooldown <= 0.0f)
         {
-            // mouse position
-            float mouseX, mouseY;
-            SDL_GetMouseState(&mouseX, &mouseY);
 
             // player position
             float PlayerX = player.getXCenter();
             float PlayerY = player.getYCenter();
 
             //direction towards mouse
-            float DirectionX = mouseX - PlayerX;
-            float DirectionY = mouseY - PlayerY;
+            float DirectionX = MouseX - PlayerX;
+            float DirectionY = MouseY - PlayerY;
 
             Bullets.emplace_back(PlayerX, PlayerY, DirectionX, DirectionY, 500.0f);
 
@@ -100,7 +103,7 @@ int main(int argc, char* argv[])
         SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
         // update player
-        player.update(DeltaTime, windowWidth, windowHeight);
+        player.update(DeltaTime, windowWidth, windowHeight, MouseX, MouseY);
 
         //update bullets
         for (auto& b : Bullets)

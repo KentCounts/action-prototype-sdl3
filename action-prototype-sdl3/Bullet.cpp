@@ -24,7 +24,7 @@ void Bullet::update(float DeltaTime)
 void Bullet::render(SDL_Renderer* renderer)
 {
 	// yellow
-	SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderFillRect(renderer, &rect);
 
 }

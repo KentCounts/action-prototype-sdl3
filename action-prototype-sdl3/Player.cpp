@@ -1,5 +1,8 @@
 #include "Player.h"
 #include <SDL3/SDL_keyboard.h>
+#include <SDL3_image/SDL_image.h>
+#include <iostream>
+
 
 Player::Player(float Xaxis, float Yaxis, float width, float height, float speed)
 {
@@ -7,8 +10,11 @@ Player::Player(float Xaxis, float Yaxis, float width, float height, float speed)
     this->speed = speed;
 }
 
-void Player::update(float DeltaTime, int windowWidth, int windowHeight)
+void Player::update(float DeltaTime, int windowWidth, int windowHeight, float MouseX, float MouseY)
 {
+
+
+    
     const bool* keys = SDL_GetKeyboardState(nullptr);
 
     float DeltaX = 0.0f;
@@ -35,6 +41,16 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight)
         DeltaY /= length;
     }
 
+    // calculate angle toward mouse
+    float cx = rect.x + rect.w * 0.5f;
+    float cy = rect.y + rect.h * 0.5f;
+
+    float dx = MouseX - cx;
+    float dy = MouseY - cy;
+
+    angle = SDL_atan2f(dy, dx);
+
+
     // new movement code
     rect.x += DeltaX * speed * DeltaTime;
     rect.y += DeltaY * speed * DeltaTime;
@@ -47,8 +63,41 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight)
     if (rect.y + rect.h > windowHeight) rect.y = windowHeight - rect.h;
 }
 
+void Player::LoadTexture(SDL_Renderer* renderer, const char* path)
+{
+    SDL_Surface* surf = IMG_Load(path);
+    if (!surf) {
+        std::cout << "IMG_Load Error: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    texture = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_DestroySurface(surf);
+
+    if (!texture) {
+        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+    }
+}
+
 void Player::render(SDL_Renderer* renderer)
 {
-    SDL_SetRenderDrawColor(renderer, 200, 50, 50, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    if (!texture)
+    {
+        return;
+    }
+
+    SDL_FRect dest = rect;
+
+    float AngleDegrees = angle * 180.0f / 3.141592 + 90.0f;
+
+    SDL_RenderTextureRotated(
+        renderer,
+        texture,
+        nullptr,
+        &dest,
+        AngleDegrees,
+        nullptr,
+        SDL_FLIP_NONE
+    );
+   
 }

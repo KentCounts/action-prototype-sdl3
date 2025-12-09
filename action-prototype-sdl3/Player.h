@@ -5,11 +5,13 @@ class Player {
 public:
     Player(float Xaxis, float Yaxis, float width, float height, float speed);
 
-    void update(float DeltaTime, int windowWidth, int windowHeight);
+    void update(float DeltaTime, int windowWidth, int windowHeight, float MouseX, float MouseY);
     void render(SDL_Renderer* renderer);
 
     float getXCenter() const { return rect.x + rect.w / 2; }
     float getYCenter() const { return rect.y + rect.h / 2; }
+
+    void LoadTexture(SDL_Renderer* renderer, const char* path);
 
 
 private:
@@ -17,4 +19,6 @@ private:
     float speed;
     float velocityX = 0.0f;
     float velocityY = 0.0f;
+    SDL_Texture* texture = nullptr;
+    float angle = 0.0f;
 };

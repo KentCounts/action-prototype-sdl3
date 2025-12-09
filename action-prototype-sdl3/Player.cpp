@@ -63,7 +63,7 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight, float Mo
     if (rect.y + rect.h > windowHeight) rect.y = windowHeight - rect.h;
 }
 
-void Player::LoadTexture(SDL_Renderer* renderer, const char* path)
+void Player::LoadShiptexture(SDL_Renderer* renderer, const char* path)
 {
     SDL_Surface* surf = IMG_Load(path);
     if (!surf) {
@@ -71,30 +71,73 @@ void Player::LoadTexture(SDL_Renderer* renderer, const char* path)
         return;
     }
 
-    texture = SDL_CreateTextureFromSurface(renderer, surf);
+    Shiptexture = SDL_CreateTextureFromSurface(renderer, surf);
     SDL_DestroySurface(surf);
 
-    if (!texture) {
+    if (!Shiptexture) {
         std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+    }
+}
+
+void Player::LoadEnginetexture(SDL_Renderer* renderer, const char* path)
+{
+    SDL_Surface* surf = IMG_Load(path);
+    if (!surf) {
+        std::cout << "IMG_Load Engine Error: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    Enginetexture = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_DestroySurface(surf);
+
+    if (!Enginetexture) {
+        std::cout << "SDL_CreateTextureFromSurface Engine Error: " << SDL_GetError() << std::endl;
     }
 }
 
 void Player::render(SDL_Renderer* renderer)
 {
-    if (!texture)
+
+    float AngleDegrees = angle * 180.0f / 3.141592 + 90.0f;
+
+    
+    
+    if (!Shiptexture)
     {
         return;
     }
 
     SDL_FRect dest = rect;
 
-    float AngleDegrees = angle * 180.0f / 3.141592 + 90.0f;
+    SDL_RenderTextureRotated(
+        renderer,
+        Shiptexture,
+        nullptr,
+        &dest,
+        AngleDegrees,
+        nullptr,
+        SDL_FLIP_NONE
+    );
+
+    if (!Enginetexture)
+    {
+        return;
+    }
+
+    SDL_FRect engine = rect;
+
+    float rotX = engineOffsetX * SDL_cosf(angle) - engineOffsetY * SDL_sinf(angle);
+    float rotY = engineOffsetX * SDL_sinf(angle) + engineOffsetY * SDL_cosf(angle);
+
+
+    engine.x += rotX;
+    engine.y += rotY;
 
     SDL_RenderTextureRotated(
         renderer,
-        texture,
+        Enginetexture,
         nullptr,
-        &dest,
+        &engine,
         AngleDegrees,
         nullptr,
         SDL_FLIP_NONE

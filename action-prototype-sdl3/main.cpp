@@ -35,7 +35,8 @@ int main(int argc, char* argv[])
     }
 
     Player player(100.0f, 100.0f, 96.0f, 96.0f, 300.0f);
-    player.LoadTexture(renderer, "assets/ship.png");
+    player.LoadShiptexture(renderer, "assets/ship.png");
+    player.LoadEnginetexture(renderer, "assets/engine.png");
 
     if (!window) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;

@@ -11,7 +11,8 @@ public:
     float getXCenter() const { return rect.x + rect.w / 2; }
     float getYCenter() const { return rect.y + rect.h / 2; }
 
-    void LoadTexture(SDL_Renderer* renderer, const char* path);
+    void LoadShiptexture(SDL_Renderer* renderer, const char* path);
+    void LoadEnginetexture(SDL_Renderer* renderer, const char* path);
 
 
 private:
@@ -19,6 +20,9 @@ private:
     float speed;
     float velocityX = 0.0f;
     float velocityY = 0.0f;
-    SDL_Texture* texture = nullptr;
+    SDL_Texture* Shiptexture = nullptr;
+    SDL_Texture* Enginetexture = nullptr;
     float angle = 0.0f;
+    float engineOffsetX = -20.0f;
+    float engineOffsetY = 0.0f;
 };

@@ -61,6 +61,26 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight, float Mo
     if (rect.y < 0) rect.y = 0;
     if (rect.x + rect.w > windowWidth) rect.x = windowWidth - rect.w;
     if (rect.y + rect.h > windowHeight) rect.y = windowHeight - rect.h;
+
+    if (IsFiring)
+    {
+        GunTimer += DeltaTime;
+
+        if (GunTimer >= GunFrameTime)
+        {
+            GunTimer -= GunFrameTime;
+            GunFrame++;
+
+            if (GunFrame >= GunFrameCount)   // wrap around
+                GunFrame = 0;
+        }
+    }
+    else
+    {
+        GunFrame = 0;  // reset animation when not firing
+        GunFrame = 0;
+    }
+
 }
 
 void Player::LoadShiptexture(SDL_Renderer* renderer, const char* path)
@@ -95,6 +115,27 @@ void Player::LoadEnginetexture(SDL_Renderer* renderer, const char* path)
     }
 }
 
+void Player::LoadGuntexture(SDL_Renderer* renderer, const char* path)
+{
+    SDL_Surface* surf = IMG_Load(path);
+    if (!surf) {
+        std::cout << "IMG_Load Gun Error: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    Guntexture = SDL_CreateTextureFromSurface(renderer, surf);
+
+    GunFrameWidth = surf->w / GunFrameCount;  
+    GunFrameHeight = surf->h;
+
+
+    SDL_DestroySurface(surf);
+
+    if (!Guntexture) {
+        std::cout << "SDL_CreateTextureFromSurface Gun Error: " << SDL_GetError() << std::endl;
+    }
+}
+
 void Player::render(SDL_Renderer* renderer)
 {
 
@@ -107,13 +148,13 @@ void Player::render(SDL_Renderer* renderer)
         return;
     }
 
-    SDL_FRect dest = rect;
+    SDL_FRect ship = rect;
 
     SDL_RenderTextureRotated(
         renderer,
         Shiptexture,
         nullptr,
-        &dest,
+        &ship,
         AngleDegrees,
         nullptr,
         SDL_FLIP_NONE
@@ -142,5 +183,40 @@ void Player::render(SDL_Renderer* renderer)
         nullptr,
         SDL_FLIP_NONE
     );
+
+    if (Guntexture)
+    {
+        SDL_FRect gun = rect;
+
+        gun.w = (float)GunFrameWidth * 2;
+        gun.h = (float)GunFrameHeight * 2;
+
+        float cx = rect.x + rect.w * 0.5f;
+        float cy = rect.y + rect.h * 0.5f;
+
+        gun.x = cx - gun.w * 0.5f;
+        gun.y = cy - gun.h * 0.5f;
+
+        int srcX = GunFrame * GunFrameWidth;
+
+        SDL_FRect src = {
+            (float)srcX,
+            0.0f,
+            (float)GunFrameWidth,
+            (float)GunFrameHeight
+        };
+
+        float AngleDegrees = angle * 180.0f / 3.1415926535f + 90.0f;
+
+        SDL_RenderTextureRotated(
+            renderer,
+            Guntexture,
+            &src,
+            &gun,
+            AngleDegrees,
+            nullptr,
+            SDL_FLIP_NONE
+        );
+    }
    
 }

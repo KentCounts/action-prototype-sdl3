@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
     Player player(100.0f, 100.0f, 96.0f, 96.0f, 300.0f);
     player.LoadShiptexture(renderer, "assets/ship.png");
     player.LoadEnginetexture(renderer, "assets/engine.png");
+    player.LoadGuntexture(renderer, "assets/gun.png");
 
     if (!window) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
@@ -98,6 +99,8 @@ int main(int argc, char* argv[])
 
             fireCooldown = fireRate;
         }
+
+        player.SetFiring(keys[SDL_SCANCODE_SPACE]);
 
         // render loop
         int windowWidth, windowHeight;

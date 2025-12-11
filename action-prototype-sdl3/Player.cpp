@@ -136,6 +136,30 @@ void Player::LoadGuntexture(SDL_Renderer* renderer, const char* path)
     }
 }
 
+SDL_FPoint Player::GetLeftGunPos() const
+{
+    float cx = rect.x + rect.w * 0.5f;
+    float cy = rect.y + rect.h * 0.5f;
+
+    // rotate offset
+    float rx = LeftGunOffset.x * SDL_cosf(angle) - LeftGunOffset.y * SDL_sinf(angle);
+    float ry = LeftGunOffset.x * SDL_sinf(angle) + LeftGunOffset.y * SDL_cosf(angle);
+
+    return { cx + rx, cy + ry };
+}
+
+SDL_FPoint Player::GetRightGunPos() const
+{
+    float cx = rect.x + rect.w * 0.5f;
+    float cy = rect.y + rect.h * 0.5f;
+
+    float rx = RightGunOffset.x * SDL_cosf(angle) - RightGunOffset.y * SDL_sinf(angle);
+    float ry = RightGunOffset.x * SDL_sinf(angle) + RightGunOffset.y * SDL_cosf(angle);
+
+    return { cx + rx, cy + ry };
+}
+
+
 void Player::render(SDL_Renderer* renderer)
 {
 

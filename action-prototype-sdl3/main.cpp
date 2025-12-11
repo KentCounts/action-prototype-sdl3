@@ -86,16 +86,21 @@ int main(int argc, char* argv[])
 
         if (keys[SDL_SCANCODE_SPACE] && fireCooldown <= 0.0f)
         {
+            SDL_FPoint gunPos;
 
-            // player position
-            float PlayerX = player.getXCenter();
-            float PlayerY = player.getYCenter();
+            if (player.FireLeftNext)
+                gunPos = player.GetLeftGunPos();
+            else
+                gunPos = player.GetRightGunPos();
 
-            //direction towards mouse
-            float DirectionX = MouseX - PlayerX;
-            float DirectionY = MouseY - PlayerY;
+            player.FireLeftNext = !player.FireLeftNext;
 
-            Bullets.emplace_back(PlayerX, PlayerY, DirectionX, DirectionY, 500.0f);
+
+            // direction toward mouse
+            float DirectionX = MouseX - gunPos.x;
+            float DirectionY = MouseY - gunPos.y;
+
+            Bullets.emplace_back(gunPos.x, gunPos.y, DirectionX, DirectionY, 700.0f);
 
             fireCooldown = fireRate;
         }

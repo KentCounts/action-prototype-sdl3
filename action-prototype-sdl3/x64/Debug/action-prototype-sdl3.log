@@ -1,3 +1,5 @@
 ﻿  Player.cpp
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\Player.cpp(142,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\Player.cpp(166,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+  Generating Code...
   action-prototype-sdl3.vcxproj -> C:\Users\Kent\source\repos\action-prototype-sdl3\x64\Debug\action-prototype-sdl3.exe

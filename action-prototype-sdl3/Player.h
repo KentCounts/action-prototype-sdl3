@@ -17,6 +17,11 @@ public:
 
     void SetFiring(bool firing) { IsFiring = firing; }
 
+    SDL_FPoint GetLeftGunPos() const;
+    SDL_FPoint GetRightGunPos() const;
+
+    bool FireLeftNext = true;
+
 
 private:
     SDL_FRect rect;
@@ -39,4 +44,7 @@ private:
     bool IsFiring = false;
     int GunFrameWidth = 0;
     int GunFrameHeight = 0;
+    SDL_FPoint LeftGunOffset = { -8.0f, -20.0f };
+    SDL_FPoint RightGunOffset = { -8.0f, 20.0f };
+
 };

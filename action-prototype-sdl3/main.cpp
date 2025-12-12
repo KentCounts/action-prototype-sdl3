@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
     player.LoadShiptexture(renderer, "assets/ship.png");
     player.LoadEnginetexture(renderer, "assets/engine.png");
     player.LoadGuntexture(renderer, "assets/gun.png");
+    Bullet::LoadBullettexture(renderer, "assets/bullet.png");
 
     if (!window) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;

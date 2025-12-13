@@ -8,6 +8,7 @@
 
 std::vector<Bullet> Bullets;
 
+bool WasSpaceDown = false;
 
 int main(int argc, char* argv[])
 {
@@ -51,20 +52,12 @@ int main(int argc, char* argv[])
 
     Uint64 LastTime = SDL_GetTicks();
 
-    // bullet cool down
-    float fireCooldown = 0.0f;
-    const float fireRate = 1.0f / 3.0f;
-
 
     while (running)
     {
         Uint64 Current = SDL_GetTicks();
         float DeltaTime = (Current - LastTime) / 1000.0f;
         LastTime = Current;
-        if (fireCooldown > 0)
-        {
-            fireCooldown -= DeltaTime;
-        }
 
 
         // handle all internal events
@@ -85,7 +78,10 @@ int main(int argc, char* argv[])
         float MouseX, MouseY;
         SDL_GetMouseState(&MouseX, &MouseY);
 
-        if (keys[SDL_SCANCODE_SPACE] && fireCooldown <= 0.0f)
+        // firing logic
+        bool IsSpacedown = keys[SDL_SCANCODE_SPACE];
+
+        if (IsSpacedown && !WasSpaceDown)
         {
             SDL_FPoint gunPos;
 
@@ -102,9 +98,11 @@ int main(int argc, char* argv[])
             float DirectionY = MouseY - gunPos.y;
 
             Bullets.emplace_back(gunPos.x, gunPos.y, DirectionX, DirectionY, 700.0f);
-
-            fireCooldown = fireRate;
         }
+
+        WasSpaceDown = IsSpacedown;
+
+        
 
         player.SetFiring(keys[SDL_SCANCODE_SPACE]);
 

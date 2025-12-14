@@ -1,5 +1,2 @@
-﻿  Bullet.cpp
-  main.cpp
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\Bullet.cpp(35,2): warning C4551: function call missing argument list
-  Generating Code...
+﻿  main.cpp
   action-prototype-sdl3.vcxproj -> C:\Users\Kent\source\repos\action-prototype-sdl3\x64\Debug\action-prototype-sdl3.exe

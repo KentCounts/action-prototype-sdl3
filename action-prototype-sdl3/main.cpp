@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include <SDL3_image/SDL_image.h>
+#include "Enemy.h"
 
 std::vector<Bullet> Bullets;
 
@@ -40,6 +41,8 @@ int main(int argc, char* argv[])
     player.LoadEnginetexture(renderer, "assets/engine.png");
     player.LoadGuntexture(renderer, "assets/gun.png");
     Bullet::LoadBullettexture(renderer, "assets/bullet.png");
+    Enemy::LoadEnemyTexture(renderer, "assets/asteroid.png");
+    
 
     if (!window) {
         std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;

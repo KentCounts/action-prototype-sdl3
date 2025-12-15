@@ -8,6 +8,7 @@
 #include "Enemy.h"
 
 std::vector<Bullet> Bullets;
+std::vector<Enemy> Enemies;
 
 bool WasSpaceDown = false;
 
@@ -54,6 +55,8 @@ int main(int argc, char* argv[])
     SDL_Event event;
 
     Uint64 LastTime = SDL_GetTicks();
+    float EnemySpawnTimer = 0.0f;
+    const float EnemySpawnInterval = 1.5f; // seconds
 
 
     while (running)
@@ -61,6 +64,53 @@ int main(int argc, char* argv[])
         Uint64 Current = SDL_GetTicks();
         float DeltaTime = (Current - LastTime) / 1000.0f;
         LastTime = Current;
+
+        EnemySpawnTimer += DeltaTime;
+
+        if (EnemySpawnTimer >= EnemySpawnInterval)
+        {
+            EnemySpawnTimer -= EnemySpawnInterval;
+
+            int windowWidth, windowHeight;
+            SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
+            int side = rand() % 4;
+
+            float x, y, vx, vy;
+            float angleOffset = ((rand() % 60) - 30) * (3.14159265f / 180.0f);
+            float speed = 120.0f;
+
+            switch (side)
+            {
+            case 0:
+                x = -40; y = rand() % windowHeight;
+                vx = SDL_cosf(angleOffset) * speed;
+                vy = SDL_sinf(angleOffset) * speed;
+                break;
+
+            case 1:
+                x = windowWidth + 40; y = rand() % windowHeight;
+                vx = SDL_cosf(3.14159265f + angleOffset) * speed;
+                vy = SDL_sinf(3.14159265f + angleOffset) * speed;
+                break;
+
+            case 2:
+                x = rand() % windowWidth; y = -40;
+                vx = SDL_cosf(1.5707963f + angleOffset) * speed;
+                vy = SDL_sinf(1.5707963f + angleOffset) * speed;
+                break;
+
+            default:
+                x = rand() % windowWidth; y = windowHeight + 40;
+                vx = SDL_cosf(-1.5707963f + angleOffset) * speed;
+                vy = SDL_sinf(-1.5707963f + angleOffset) * speed;
+                break;
+            }
+
+
+            Enemies.emplace_back(x, y, vx, vy, 96.0f);
+        }
+
 
 
         // handle all internal events
@@ -122,13 +172,26 @@ int main(int argc, char* argv[])
             b.update(DeltaTime);
         }
 
+        // update enemies
+        for (auto& e : Enemies)
+        {
+            e.update(DeltaTime);
+        }
+
+        // remove enemies off screen
+        Enemies.erase(
+            std::remove_if(Enemies.begin(), Enemies.end(),
+                [&](const Enemy& e) { return e.isOffScreen(windowWidth, windowHeight); }),
+            Enemies.end()
+        );
+
+
         // remove bullets off-screen
         Bullets.erase(
             std::remove_if(Bullets.begin(), Bullets.end(),
                 [&](const Bullet& b) {return b.isOffScreen(windowWidth, windowHeight); }),
             Bullets.end()
         );
-
         
         // black screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -139,8 +202,15 @@ int main(int argc, char* argv[])
 
         // bullet render
         for (auto& b : Bullets)
+        {
             b.render(renderer);
+        }
 
+        // enemy render
+        for (const auto& e : Enemies)
+        {
+            e.render(renderer);
+        }
 
 
         // score board render

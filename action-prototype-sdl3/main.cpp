@@ -186,7 +186,7 @@ int main(int argc, char* argv[])
                 return (dx * dx + dy * dy) <= (r * r);
             };
 
-        // Bullet Enemy collision: delete both on hit
+        // Bullet Enemy collision
         for (size_t bi = 0; bi < Bullets.size(); )
         {
             bool bulletRemoved = false;
@@ -196,16 +196,16 @@ int main(int argc, char* argv[])
                 if (CircleHit(Bullets[bi].GetPos(), Bullets[bi].GetRadius(),
                     Enemies[ei].GetPos(), Enemies[ei].GetRadius()))
                 {
-                    // Remove bullet (swap-pop)
+                  
                     Bullets[bi] = Bullets.back();
                     Bullets.pop_back();
 
-                    // Remove enemy (swap-pop)
+                   
                     Enemies[ei] = Enemies.back();
                     Enemies.pop_back();
 
                     bulletRemoved = true;
-                    break; // bullet is gone; stop checking it
+                    break;
                 }
                 else
                 {

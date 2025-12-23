@@ -1,8 +1,10 @@
-﻿  main.cpp
+﻿  Enemy.cpp
+  main.cpp
 C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(86,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(92,33): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(92,50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(98,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(104,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(104,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
   action-prototype-sdl3.vcxproj -> C:\Users\Kent\source\repos\action-prototype-sdl3\x64\Debug\action-prototype-sdl3.exe

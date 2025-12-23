@@ -178,6 +178,46 @@ int main(int argc, char* argv[])
             e.update(DeltaTime);
         }
 
+        auto CircleHit = [](SDL_FPoint a, float ar, SDL_FPoint b, float br) -> bool
+            {
+                float dx = a.x - b.x;
+                float dy = a.y - b.y;
+                float r = ar + br;
+                return (dx * dx + dy * dy) <= (r * r);
+            };
+
+        // Bullet Enemy collision: delete both on hit
+        for (size_t bi = 0; bi < Bullets.size(); )
+        {
+            bool bulletRemoved = false;
+
+            for (size_t ei = 0; ei < Enemies.size(); )
+            {
+                if (CircleHit(Bullets[bi].GetPos(), Bullets[bi].GetRadius(),
+                    Enemies[ei].GetPos(), Enemies[ei].GetRadius()))
+                {
+                    // Remove bullet (swap-pop)
+                    Bullets[bi] = Bullets.back();
+                    Bullets.pop_back();
+
+                    // Remove enemy (swap-pop)
+                    Enemies[ei] = Enemies.back();
+                    Enemies.pop_back();
+
+                    bulletRemoved = true;
+                    break; // bullet is gone; stop checking it
+                }
+                else
+                {
+                    ++ei;
+                }
+            }
+
+            if (!bulletRemoved)
+                ++bi;
+        }
+
+
         // remove enemies off screen
         Enemies.erase(
             std::remove_if(Enemies.begin(), Enemies.end(),

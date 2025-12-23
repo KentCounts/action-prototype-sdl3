@@ -8,6 +8,9 @@ public:
     void update(float dt);
     void render(SDL_Renderer* renderer);
 
+    SDL_FPoint GetPos() const { return position; }
+    float GetRadius() const { return 6.0f; }
+
     bool isOffScreen(int winW, int winH) const;
 
     static void LoadBullettexture(SDL_Renderer* renderer, const char* path);

@@ -14,6 +14,7 @@ public:
     void LoadShiptexture(SDL_Renderer* renderer, const char* path);
     void LoadEnginetexture(SDL_Renderer* renderer, const char* path);
     void LoadGuntexture(SDL_Renderer* renderer, const char* path);
+    void LoadFlametexture(SDL_Renderer* renderer, const char* path);
 
     void SetFiring(bool firing) { IsFiring = firing; }
 
@@ -32,6 +33,7 @@ private:
     SDL_Texture* Shiptexture = nullptr;
     SDL_Texture* Enginetexture = nullptr;
     SDL_Texture* Guntexture = nullptr;
+    SDL_Texture* Flametexture = nullptr;
 
     float angle = 0.0f;
     float engineOffsetX = -20.0f;
@@ -46,5 +48,17 @@ private:
     int GunFrameHeight = 0;
     SDL_FPoint LeftGunOffset = { -8.0f, -20.0f };
     SDL_FPoint RightGunOffset = { -8.0f, 20.0f };
+
+
+    int FlameFrame = 0;
+    float FlameTimer = 0.0f;
+    float FlameFrameTime = 0.05f;
+    int FlameFrameWidth = 0;
+    int FlameFrameHeight = 0;
+    const int FlameFrameCount = 4;
+
+    float flameOffsetX = -10.0f;
+    float flameOffsetY = 0.0f;
+    float flameScale = 1.0f;
 
 };

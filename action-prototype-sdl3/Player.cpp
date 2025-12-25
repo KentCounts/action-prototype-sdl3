@@ -81,6 +81,13 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight, float Mo
         GunFrame = 0;
     }
 
+    FlameTimer += DeltaTime;
+    if (FlameTimer >= FlameFrameTime)
+    {
+        FlameTimer -= FlameFrameTime;
+        FlameFrame = (FlameFrame + 1) % FlameFrameCount;
+    }
+
 }
 
 void Player::LoadShiptexture(SDL_Renderer* renderer, const char* path)
@@ -135,6 +142,27 @@ void Player::LoadGuntexture(SDL_Renderer* renderer, const char* path)
         std::cout << "SDL_CreateTextureFromSurface Gun Error: " << SDL_GetError() << std::endl;
     }
 }
+
+void Player::LoadFlametexture(SDL_Renderer* renderer, const char* path)
+{
+    SDL_Surface* surf = IMG_Load(path);
+    if (!surf) {
+        std::cout << "IMG_Load Flame Error: " << SDL_GetError() << std::endl;
+        return;
+    }
+
+    Flametexture = SDL_CreateTextureFromSurface(renderer, surf);
+
+    FlameFrameWidth = surf->w / FlameFrameCount;
+    FlameFrameHeight = surf->h;
+
+    SDL_DestroySurface(surf);
+
+    if (!Flametexture) {
+        std::cout << "SDL_CreateTextureFromSurface Flame Error: " << SDL_GetError() << std::endl;
+    }
+}
+
 
 SDL_FPoint Player::GetLeftGunPos() const
 {
@@ -207,6 +235,42 @@ void Player::render(SDL_Renderer* renderer)
         nullptr,
         SDL_FLIP_NONE
     );
+
+    if (Flametexture)
+    {
+        SDL_FRect flameDst = rect;
+
+        float rotX = engineOffsetX * SDL_cosf(angle) - engineOffsetY * SDL_sinf(angle);
+        float rotY = engineOffsetX * SDL_sinf(angle) + engineOffsetY * SDL_cosf(angle);
+
+        float frotX = flameOffsetX * SDL_cosf(angle) - flameOffsetY * SDL_sinf(angle);
+        float frotY = flameOffsetX * SDL_sinf(angle) + flameOffsetY * SDL_cosf(angle);
+
+        flameDst.x += rotX + frotX;
+        flameDst.y += rotY + frotY;
+
+        SDL_FRect flameSrc = {
+            (float)(FlameFrame * FlameFrameWidth),
+            0.0f,
+            (float)FlameFrameWidth,
+            (float)FlameFrameHeight
+        };
+
+        flameDst.w = rect.w * flameScale;
+        flameDst.h = rect.h * flameScale;
+
+        float AngleDegrees = angle * 180.0f / 3.14159265f + 90.0f;
+
+        SDL_RenderTextureRotated(
+            renderer,
+            Flametexture,
+            &flameSrc,
+            &flameDst,
+            AngleDegrees,
+            nullptr,
+            SDL_FLIP_NONE
+        );
+    }
 
     if (Guntexture)
     {

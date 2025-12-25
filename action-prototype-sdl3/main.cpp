@@ -43,6 +43,7 @@ int main(int argc, char* argv[])
     player.LoadGuntexture(renderer, "assets/gun.png");
     Bullet::LoadBullettexture(renderer, "assets/bullet.png");
     Enemy::LoadEnemyTexture(renderer, "assets/asteroid.png");
+    player.LoadFlametexture(renderer, "assets/flame.png");
     
 
     if (!window) {

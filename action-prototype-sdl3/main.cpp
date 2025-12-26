@@ -6,9 +6,13 @@
 #include "Bullet.h"
 #include <SDL3_image/SDL_image.h>
 #include "Enemy.h"
+#include "BackgroundLayer.h"
 
 std::vector<Bullet> Bullets;
 std::vector<Enemy> Enemies;
+
+BackgroundLayer bg1, bg2, bg3;
+
 
 bool WasSpaceDown = false;
 
@@ -23,8 +27,8 @@ int main(int argc, char* argv[])
     // Create a window
     SDL_Window* window = SDL_CreateWindow(
         "SDL3 Test Window",
-        800, 600,
-        SDL_WINDOW_RESIZABLE
+        1280, 720,
+        0
     );
     
   
@@ -44,6 +48,15 @@ int main(int argc, char* argv[])
     Bullet::LoadBullettexture(renderer, "assets/bullet.png");
     Enemy::LoadEnemyTexture(renderer, "assets/asteroid.png");
     player.LoadFlametexture(renderer, "assets/flame.png");
+
+    bg1.Load(renderer, "assets/background 1.png", 640, 360, 9);
+    bg2.Load(renderer, "assets/background 2.png", 640, 360, 9);
+    bg3.Load(renderer, "assets/background 3.png", 640, 360, 9);
+
+    bg1.SetFrameTime(0.10f);
+    bg2.SetFrameTime(0.08f);
+    bg3.SetFrameTime(0.06f);
+
     
 
     if (!window) {
@@ -65,6 +78,10 @@ int main(int argc, char* argv[])
         Uint64 Current = SDL_GetTicks();
         float DeltaTime = (Current - LastTime) / 1000.0f;
         LastTime = Current;
+
+        bg1.Update(DeltaTime);
+        bg2.Update(DeltaTime);
+        bg3.Update(DeltaTime);
 
         EnemySpawnTimer += DeltaTime;
 
@@ -233,10 +250,14 @@ int main(int argc, char* argv[])
                 [&](const Bullet& b) {return b.isOffScreen(windowWidth, windowHeight); }),
             Bullets.end()
         );
-        
+
         // black screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
+
+        bg1.Render(renderer, windowWidth, windowHeight);
+        bg2.Render(renderer, windowWidth, windowHeight);
+        bg3.Render(renderer, windowWidth, windowHeight);
 
         // player rendering
         player.render(renderer);

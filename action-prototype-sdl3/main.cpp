@@ -16,6 +16,59 @@ BackgroundLayer bg1, bg2, bg3;
 
 bool WasSpaceDown = false;
 
+enum class GameState
+{
+    Title,
+    Playing
+};
+
+GameState State = GameState::Title;
+
+static bool PointInRect(float px, float py, const SDL_FRect& r)
+{
+    return px >= r.x && px <= (r.x + r.w) &&
+        py >= r.y && py <= (r.y + r.h);
+}
+
+// png texture loader 
+static SDL_Texture* LoadTexture(SDL_Renderer* renderer, const char* path)
+{
+    SDL_Surface* surf = IMG_Load(path);
+    if (!surf) {
+        std::cout << "IMG_Load failed: " << path << " error: " << SDL_GetError() << std::endl;
+        return nullptr;
+    }
+
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_DestroySurface(surf);
+
+    if (!tex) {
+        std::cout << "CreateTexture failed: " << path << " error: " << SDL_GetError() << std::endl;
+    }
+    return tex;
+}
+
+// button texture renderer helper
+static void RenderCentered(SDL_Renderer* renderer, SDL_Texture* tex, const SDL_FRect& r)
+{
+    if (!tex) return;
+
+    float tw, th;
+    SDL_GetTextureSize(tex, &tw, &th);
+
+    SDL_FRect dst = {
+        r.x + (r.w - tw) * 0.5f,
+        r.y + (r.h - th) * 0.5f,
+        tw,
+        th
+    };
+
+    SDL_RenderTexture(renderer, tex, nullptr, &dst);
+}
+
+
+
+
 int main(int argc, char* argv[])
 {
     // Initialize SDL Video subsystem
@@ -45,9 +98,15 @@ int main(int argc, char* argv[])
     player.LoadShiptexture(renderer, "assets/ship.png");
     player.LoadEnginetexture(renderer, "assets/engine.png");
     player.LoadGuntexture(renderer, "assets/gun.png");
+    player.LoadFlametexture(renderer, "assets/flame.png");
+
     Bullet::LoadBullettexture(renderer, "assets/bullet.png");
     Enemy::LoadEnemyTexture(renderer, "assets/asteroid.png");
-    player.LoadFlametexture(renderer, "assets/flame.png");
+
+    SDL_Texture* titleTex = LoadTexture(renderer, "assets/title.png");
+    SDL_Texture* newGameTex = LoadTexture(renderer, "assets/new_game.png");
+    SDL_Texture* leaderTex = LoadTexture(renderer, "assets/leaderboards.png");
+    SDL_Texture* quitTex = LoadTexture(renderer, "assets/quit.png");
 
     bg1.Load(renderer, "assets/background 1.png", 640, 360, 9);
     bg2.Load(renderer, "assets/background 2.png", 640, 360, 9);
@@ -129,6 +188,13 @@ int main(int argc, char* argv[])
             Enemies.emplace_back(x, y, vx, vy, 96.0f);
         }
 
+        // menu buttons
+        int windowWidth, windowHeight;
+        SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+        SDL_FRect NewGameButton = { windowWidth * 0.5f - 150.0f, 300.0f, 300.0f, 60.0f };
+        SDL_FRect LeaderButton = { windowWidth * 0.5f - 150.0f, 380.0f, 300.0f, 60.0f };
+        SDL_FRect QuitButton = { windowWidth * 0.5f - 150.0f, 460.0f, 300.0f, 60.0f };
+
 
 
         // handle all internal events
@@ -139,8 +205,39 @@ int main(int argc, char* argv[])
             case SDL_EVENT_QUIT:
                 running = false;
                 break;
+
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                if (State == GameState::Title && event.button.button == SDL_BUTTON_LEFT)
+                {
+                    float mx = event.button.x;
+                    float my = event.button.y;
+
+                    if (PointInRect(mx, my, NewGameButton))
+                    {
+                        // Reset game state
+                        Bullets.clear();
+                        Enemies.clear();
+                        EnemySpawnTimer = 0.0f;
+
+                        // Put player back where you want
+                        // (If your Player class has a setter, use it; otherwise reconstruct)
+                        // Example: player.SetPosition(100,100);
+
+                        State = GameState::Playing;
+                    }
+                    else if (PointInRect(mx, my, LeaderButton))
+                    {
+                        // placeholder: do nothing for now
+                    }
+                    else if (PointInRect(mx, my, QuitButton))
+                    {
+                        running = false;
+                    }
+                }
+                break;
             }
         }
+
 
         // keyboard stuff
         const bool* keys = SDL_GetKeyboardState(nullptr);
@@ -178,78 +275,7 @@ int main(int argc, char* argv[])
         player.SetFiring(keys[SDL_SCANCODE_SPACE]);
 
         // render loop
-        int windowWidth, windowHeight;
         SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
-        // update player
-        player.update(DeltaTime, windowWidth, windowHeight, MouseX, MouseY);
-
-        //update bullets
-        for (auto& b : Bullets)
-        {
-            b.update(DeltaTime);
-        }
-
-        // update enemies
-        for (auto& e : Enemies)
-        {
-            e.update(DeltaTime);
-        }
-
-        auto CircleHit = [](SDL_FPoint a, float ar, SDL_FPoint b, float br) -> bool
-            {
-                float dx = a.x - b.x;
-                float dy = a.y - b.y;
-                float r = ar + br;
-                return (dx * dx + dy * dy) <= (r * r);
-            };
-
-        // Bullet Enemy collision
-        for (size_t bi = 0; bi < Bullets.size(); )
-        {
-            bool bulletRemoved = false;
-
-            for (size_t ei = 0; ei < Enemies.size(); )
-            {
-                if (CircleHit(Bullets[bi].GetPos(), Bullets[bi].GetRadius(),
-                    Enemies[ei].GetPos(), Enemies[ei].GetRadius()))
-                {
-                  
-                    Bullets[bi] = Bullets.back();
-                    Bullets.pop_back();
-
-                   
-                    Enemies[ei] = Enemies.back();
-                    Enemies.pop_back();
-
-                    bulletRemoved = true;
-                    break;
-                }
-                else
-                {
-                    ++ei;
-                }
-            }
-
-            if (!bulletRemoved)
-                ++bi;
-        }
-
-
-        // remove enemies off screen
-        Enemies.erase(
-            std::remove_if(Enemies.begin(), Enemies.end(),
-                [&](const Enemy& e) { return e.isOffScreen(windowWidth, windowHeight); }),
-            Enemies.end()
-        );
-
-
-        // remove bullets off-screen
-        Bullets.erase(
-            std::remove_if(Bullets.begin(), Bullets.end(),
-                [&](const Bullet& b) {return b.isOffScreen(windowWidth, windowHeight); }),
-            Bullets.end()
-        );
 
         // black screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -259,26 +285,132 @@ int main(int argc, char* argv[])
         bg2.Render(renderer, windowWidth, windowHeight);
         bg3.Render(renderer, windowWidth, windowHeight);
 
-        // player rendering
-        player.render(renderer);
 
-        // bullet render
-        for (auto& b : Bullets)
+        if (State == GameState::Playing)
         {
-            b.render(renderer);
+            // update player
+            player.update(DeltaTime, windowWidth, windowHeight, MouseX, MouseY);
+
+            //update bullets
+            for (auto& b : Bullets)
+            {
+                b.update(DeltaTime);
+            }
+
+            // update enemies
+            for (auto& e : Enemies)
+            {
+                e.update(DeltaTime);
+            }
+
+            auto CircleHit = [](SDL_FPoint a, float ar, SDL_FPoint b, float br) -> bool
+                {
+                    float dx = a.x - b.x;
+                    float dy = a.y - b.y;
+                    float r = ar + br;
+                    return (dx * dx + dy * dy) <= (r * r);
+                };
+
+            // Bullet Enemy collision
+            for (size_t bi = 0; bi < Bullets.size(); )
+            {
+                bool bulletRemoved = false;
+
+                for (size_t ei = 0; ei < Enemies.size(); )
+                {
+                    if (CircleHit(Bullets[bi].GetPos(), Bullets[bi].GetRadius(),
+                        Enemies[ei].GetPos(), Enemies[ei].GetRadius()))
+                    {
+
+                        Bullets[bi] = Bullets.back();
+                        Bullets.pop_back();
+
+
+                        Enemies[ei] = Enemies.back();
+                        Enemies.pop_back();
+
+                        bulletRemoved = true;
+                        break;
+                    }
+                    else
+                    {
+                        ++ei;
+                    }
+                }
+
+                if (!bulletRemoved)
+                    ++bi;
+            }
+
+
+            // remove enemies off screen
+            Enemies.erase(
+                std::remove_if(Enemies.begin(), Enemies.end(),
+                    [&](const Enemy& e) { return e.isOffScreen(windowWidth, windowHeight); }),
+                Enemies.end()
+            );
+
+
+            // remove bullets off-screen
+            Bullets.erase(
+                std::remove_if(Bullets.begin(), Bullets.end(),
+                    [&](const Bullet& b) {return b.isOffScreen(windowWidth, windowHeight); }),
+                Bullets.end()
+            );
+
+            // player rendering
+            player.render(renderer);
+
+            // bullet render
+            for (auto& b : Bullets)
+            {
+                b.render(renderer);
+            }
+
+            // enemy render
+            for (const auto& e : Enemies)
+            {
+                e.render(renderer);
+            }
+
+
+            // score board render
+            SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
+            SDL_SetRenderDrawColor(renderer, 50, 50, 50, 200);
+            SDL_RenderFillRect(renderer, &Scoreboard);
         }
 
-        // enemy render
-        for (const auto& e : Enemies)
+        else
         {
-            e.render(renderer);
+
+            // Draw buttons
+            float mx, my;
+            SDL_GetMouseState(&mx, &my);
+
+            auto DrawButton = [&](const SDL_FRect& r)
+                {
+                    bool hover = PointInRect(mx, my, r);
+                    if (hover) SDL_SetRenderDrawColor(renderer, 90, 90, 90, 220);
+                    else       SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
+
+                    SDL_RenderFillRect(renderer, &r);
+                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+                    SDL_RenderRect(renderer, &r);
+                };
+
+            DrawButton(NewGameButton);
+            DrawButton(LeaderButton);
+            DrawButton(QuitButton);
+
+            SDL_FRect titleDst = { windowWidth * 0.5f - 300.0f, 140.0f, 600.0f, 120.0f };
+            SDL_RenderTexture(renderer, titleTex, nullptr, &titleDst);
+
+            RenderCentered(renderer, newGameTex, NewGameButton);
+            RenderCentered(renderer, leaderTex, LeaderButton);
+            RenderCentered(renderer, quitTex, QuitButton);
+
         }
 
-
-        // score board render
-        SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f  };
-        SDL_SetRenderDrawColor(renderer, 50, 50, 50, 200);
-        SDL_RenderFillRect(renderer, &Scoreboard);
 
         // Present the window thing?
         SDL_RenderPresent(renderer);

@@ -1,8 +1,8 @@
 ﻿  main.cpp
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(104,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(110,33): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(110,50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(116,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(122,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(122,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(163,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(169,33): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(169,50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(175,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(181,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(181,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   action-prototype-sdl3.vcxproj -> C:\Users\Kent\source\repos\action-prototype-sdl3\x64\Debug\action-prototype-sdl3.exe

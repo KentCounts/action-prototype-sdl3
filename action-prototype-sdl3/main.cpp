@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <vector>
+#include <string>
 #include <SDL3/SDL_keyboard.h>
 #include "Player.h"
 #include "Bullet.h"
@@ -13,6 +14,7 @@ std::vector<Enemy> Enemies;
 
 BackgroundLayer bg1, bg2, bg3;
 
+int Score = 0;
 
 bool WasSpaceDown = false;
 
@@ -66,6 +68,33 @@ static void RenderCentered(SDL_Renderer* renderer, SDL_Texture* tex, const SDL_F
     SDL_RenderTexture(renderer, tex, nullptr, &dst);
 }
 
+// digit texture helper
+static void RenderNumberRightAligned(SDL_Renderer* renderer, SDL_Texture* digitsTex,
+    int digitW, int digitH, int value,
+    float rightX, float y, float scale)
+{
+    if (!digitsTex || digitW <= 0 || digitH <= 0) return;
+
+    if (value < 0) value = 0;
+
+    std::string s = std::to_string(value);
+
+    float drawW = digitW * scale;
+    float drawH = digitH * scale;
+
+    // right-aligned start x
+    float x = rightX - drawW * (float)s.size();
+
+    for (char c : s)
+    {
+        int d = c - '0';
+        SDL_FRect src = { (float)(d * digitW), 0.0f, (float)digitW, (float)digitH };
+        SDL_FRect dst = { x, y, drawW, drawH };
+
+        SDL_RenderTexture(renderer, digitsTex, &src, &dst);
+        x += drawW;
+    }
+}
 
 
 
@@ -115,6 +144,19 @@ int main(int argc, char* argv[])
     bg1.SetFrameTime(0.10f);
     bg2.SetFrameTime(0.08f);
     bg3.SetFrameTime(0.06f);
+
+    SDL_Texture* digitsTex = LoadTexture(renderer, "assets/digits.png");
+    const int digitCount = 10;
+    int digitW = 0, digitH = 0;
+
+    if (digitsTex)
+    {
+        float tw, th;
+        SDL_GetTextureSize(digitsTex, &tw, &th);
+        digitW = (int)(tw / digitCount);
+        digitH = (int)(th);
+    }
+
 
     
 
@@ -224,6 +266,7 @@ int main(int argc, char* argv[])
                         // Example: player.SetPosition(100,100);
 
                         State = GameState::Playing;
+                        Score = 0;
                     }
                     else if (PointInRect(mx, my, LeaderButton))
                     {
@@ -329,6 +372,8 @@ int main(int argc, char* argv[])
                         Enemies[ei] = Enemies.back();
                         Enemies.pop_back();
 
+                        Score += 100;
+
                         bulletRemoved = true;
                         break;
                     }
@@ -378,6 +423,13 @@ int main(int argc, char* argv[])
             SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
             SDL_SetRenderDrawColor(renderer, 50, 50, 50, 200);
             SDL_RenderFillRect(renderer, &Scoreboard);
+
+            // Score digits
+            RenderNumberRightAligned(renderer, digitsTex, digitW, digitH,
+                Score,
+                Scoreboard.x + Scoreboard.w - 15.0f,  
+                Scoreboard.y + 15.0f,                 
+                1.0f);                                
         }
 
         else

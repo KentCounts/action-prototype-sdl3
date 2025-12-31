@@ -68,31 +68,44 @@ static void RenderCentered(SDL_Renderer* renderer, SDL_Texture* tex, const SDL_F
     SDL_RenderTexture(renderer, tex, nullptr, &dst);
 }
 
+static const int leftTrim[10] = { 0, 2, 0, 0, 0, 0, 0, 0, -3, -3 };
+static const int rightTrim[10] = { -1, 0, 0, 0, 0, 0, 0, 2, 2, 0 };
+
 // digit texture helper
 static void RenderNumberRightAligned(SDL_Renderer* renderer, SDL_Texture* digitsTex,
     int digitW, int digitH, int value,
     float rightX, float y, float scale)
 {
     if (!digitsTex || digitW <= 0 || digitH <= 0) return;
-
     if (value < 0) value = 0;
 
     std::string s = std::to_string(value);
 
-    float drawW = digitW * scale;
     float drawH = digitH * scale;
 
-    // right-aligned start x
-    float x = rightX - drawW * (float)s.size();
+    // Compute total width using TRIMMED widths so right-align is correct
+    float totalW = 0.0f;
+    for (char c : s)
+    {
+        int d = c - '0';
+        int sw = digitW - leftTrim[d] - rightTrim[d];
+        totalW += sw * scale;
+    }
+
+    float x = rightX - totalW;
 
     for (char c : s)
     {
         int d = c - '0';
-        SDL_FRect src = { (float)(d * digitW), 0.0f, (float)digitW, (float)digitH };
-        SDL_FRect dst = { x, y, drawW, drawH };
+
+        int sx = d * digitW + leftTrim[d];
+        int sw = digitW - leftTrim[d] - rightTrim[d];
+
+        SDL_FRect src = { (float)sx, 0.0f, (float)sw, (float)digitH };
+        SDL_FRect dst = { x, y, sw * scale, drawH };
 
         SDL_RenderTexture(renderer, digitsTex, &src, &dst);
-        x += drawW;
+        x += dst.w;
     }
 }
 
@@ -421,8 +434,9 @@ int main(int argc, char* argv[])
 
             // score board render
             SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
-            SDL_SetRenderDrawColor(renderer, 50, 50, 50, 200);
-            SDL_RenderFillRect(renderer, &Scoreboard);
+            // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 120);
+            // SDL_RenderFillRect(renderer, &Scoreboard);
+
 
             // Score digits
             RenderNumberRightAligned(renderer, digitsTex, digitW, digitH,

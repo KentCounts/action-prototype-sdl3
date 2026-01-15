@@ -12,16 +12,17 @@ public:
     float getYCenter() const { return rect.y + rect.h / 2; }
 
     void LoadShiptexture(SDL_Renderer* renderer, const char* path);
-    void LoadEnginetexture(SDL_Renderer* renderer, const char* path);
-    void LoadGuntexture(SDL_Renderer* renderer, const char* path);
-    void LoadFlametexture(SDL_Renderer* renderer, const char* path);
 
-    void SetFiring(bool firing) { IsFiring = firing; }
+    // void LoadEnginetexture(SDL_Renderer* renderer, const char* path);
+    // void LoadGuntexture(SDL_Renderer* renderer, const char* path);
+    // void LoadFlametexture(SDL_Renderer* renderer, const char* path);
 
-    SDL_FPoint GetLeftGunPos() const;
-    SDL_FPoint GetRightGunPos() const;
+    // void SetFiring(bool firing) { IsFiring = firing; }
 
-    bool FireLeftNext = true;
+    // SDL_FPoint GetLeftGunPos() const;
+    // SDL_FPoint GetRightGunPos() const;
+
+    // bool FireLeftNext = true;
 
 
 private:
@@ -31,34 +32,34 @@ private:
     float velocityY = 0.0f;
 
     SDL_Texture* Shiptexture = nullptr;
-    SDL_Texture* Enginetexture = nullptr;
-    SDL_Texture* Guntexture = nullptr;
-    SDL_Texture* Flametexture = nullptr;
+    // SDL_Texture* Enginetexture = nullptr;
+    // SDL_Texture* Guntexture = nullptr;
+    // SDL_Texture* Flametexture = nullptr;
 
     float angle = 0.0f;
-    float engineOffsetX = -20.0f;
-    float engineOffsetY = 0.0f;
+    // float engineOffsetX = -20.0f;
+    // float engineOffsetY = 0.0f;
 
-    int GunFrame = 0;
-    const int GunFrameCount = 7;
-    float GunFrameTime = 0.05f;
-    float GunTimer = 0.0f;
-    bool IsFiring = false;
-    int GunFrameWidth = 0;
-    int GunFrameHeight = 0;
-    SDL_FPoint LeftGunOffset = { -8.0f, -20.0f };
-    SDL_FPoint RightGunOffset = { -8.0f, 20.0f };
+    // int GunFrame = 0;
+    // const int GunFrameCount = 7;
+    // float GunFrameTime = 0.05f;
+    // float GunTimer = 0.0f;
+    // bool IsFiring = false;
+    // int GunFrameWidth = 0;
+    // int GunFrameHeight = 0;
+    // SDL_FPoint LeftGunOffset = { -8.0f, -20.0f };
+    // SDL_FPoint RightGunOffset = { -8.0f, 20.0f };
 
 
-    int FlameFrame = 0;
-    float FlameTimer = 0.0f;
-    float FlameFrameTime = 0.05f;
-    int FlameFrameWidth = 0;
-    int FlameFrameHeight = 0;
-    const int FlameFrameCount = 4;
+    // int FlameFrame = 0;
+    // float FlameTimer = 0.0f;
+    // float FlameFrameTime = 0.05f;
+    // int FlameFrameWidth = 0;
+    // int FlameFrameHeight = 0;
+    // const int FlameFrameCount = 4;
 
-    float flameOffsetX = -10.0f;
-    float flameOffsetY = 0.0f;
-    float flameScale = 1.0f;
+    // float flameOffsetX = -10.0f;
+    // float flameOffsetY = 0.0f;
+    // float flameScale = 1.0f;
 
 };

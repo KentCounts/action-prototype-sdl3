@@ -62,7 +62,7 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight, float Mo
     if (rect.x + rect.w > windowWidth) rect.x = windowWidth - rect.w;
     if (rect.y + rect.h > windowHeight) rect.y = windowHeight - rect.h;
 
-    if (IsFiring)
+    /*if (IsFiring)
     {
         GunTimer += DeltaTime;
 
@@ -79,14 +79,14 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight, float Mo
     {
         GunFrame = 0;  // reset animation when not firing
         GunFrame = 0;
-    }
+    } */
 
-    FlameTimer += DeltaTime;
+    /*FlameTimer += DeltaTime;
     if (FlameTimer >= FlameFrameTime)
     {
         FlameTimer -= FlameFrameTime;
         FlameFrame = (FlameFrame + 1) % FlameFrameCount;
-    }
+    }*/
 
 }
 
@@ -106,7 +106,7 @@ void Player::LoadShiptexture(SDL_Renderer* renderer, const char* path)
     }
 }
 
-void Player::LoadEnginetexture(SDL_Renderer* renderer, const char* path)
+/* void Player::LoadEnginetexture(SDL_Renderer* renderer, const char* path)
 {
     SDL_Surface* surf = IMG_Load(path);
     if (!surf) {
@@ -120,9 +120,9 @@ void Player::LoadEnginetexture(SDL_Renderer* renderer, const char* path)
     if (!Enginetexture) {
         std::cout << "SDL_CreateTextureFromSurface Engine Error: " << SDL_GetError() << std::endl;
     }
-}
+} */
 
-void Player::LoadGuntexture(SDL_Renderer* renderer, const char* path)
+/* void Player::LoadGuntexture(SDL_Renderer* renderer, const char* path)
 {
     SDL_Surface* surf = IMG_Load(path);
     if (!surf) {
@@ -141,9 +141,9 @@ void Player::LoadGuntexture(SDL_Renderer* renderer, const char* path)
     if (!Guntexture) {
         std::cout << "SDL_CreateTextureFromSurface Gun Error: " << SDL_GetError() << std::endl;
     }
-}
+} */
 
-void Player::LoadFlametexture(SDL_Renderer* renderer, const char* path)
+/* void Player::LoadFlametexture(SDL_Renderer* renderer, const char* path)
 {
     SDL_Surface* surf = IMG_Load(path);
     if (!surf) {
@@ -161,10 +161,10 @@ void Player::LoadFlametexture(SDL_Renderer* renderer, const char* path)
     if (!Flametexture) {
         std::cout << "SDL_CreateTextureFromSurface Flame Error: " << SDL_GetError() << std::endl;
     }
-}
+} */
 
 
-SDL_FPoint Player::GetLeftGunPos() const
+/*SDL_FPoint Player::GetLeftGunPos() const
 {
     float cx = rect.x + rect.w * 0.5f;
     float cy = rect.y + rect.h * 0.5f;
@@ -174,9 +174,9 @@ SDL_FPoint Player::GetLeftGunPos() const
     float ry = LeftGunOffset.x * SDL_sinf(angle) + LeftGunOffset.y * SDL_cosf(angle);
 
     return { cx + rx, cy + ry };
-}
+} */
 
-SDL_FPoint Player::GetRightGunPos() const
+/*SDL_FPoint Player::GetRightGunPos() const
 {
     float cx = rect.x + rect.w * 0.5f;
     float cy = rect.y + rect.h * 0.5f;
@@ -185,7 +185,7 @@ SDL_FPoint Player::GetRightGunPos() const
     float ry = RightGunOffset.x * SDL_sinf(angle) + RightGunOffset.y * SDL_cosf(angle);
 
     return { cx + rx, cy + ry };
-}
+} */
 
 
 void Player::render(SDL_Renderer* renderer)
@@ -212,7 +212,7 @@ void Player::render(SDL_Renderer* renderer)
         SDL_FLIP_NONE
     );
 
-    if (!Enginetexture)
+    /* if (!Enginetexture)
     {
         return;
     }
@@ -234,9 +234,9 @@ void Player::render(SDL_Renderer* renderer)
         AngleDegrees,
         nullptr,
         SDL_FLIP_NONE
-    );
+    ); */
 
-    if (Flametexture)
+    /*if (Flametexture)
     {
         SDL_FRect flameDst = rect;
 
@@ -270,9 +270,9 @@ void Player::render(SDL_Renderer* renderer)
             nullptr,
             SDL_FLIP_NONE
         );
-    }
+    } */
 
-    if (Guntexture)
+    /*if (Guntexture)
     {
         SDL_FRect gun = rect;
 
@@ -305,6 +305,6 @@ void Player::render(SDL_Renderer* renderer)
             nullptr,
             SDL_FLIP_NONE
         );
-    }
+    } */
    
 }

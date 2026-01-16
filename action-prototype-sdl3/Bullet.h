@@ -13,24 +13,24 @@ public:
 
     bool isOffScreen(int winW, int winH) const;
 
-    static void LoadBullettexture(SDL_Renderer* renderer, const char* path);
+    // static void LoadBullettexture(SDL_Renderer* renderer, const char* path);
 
 private:
-    SDL_FRect rect;
-    float dx;
-    float dy;
-    float speed;
+    // SDL_FRect rect;
+    // float dx;
+    // float dy;
+    // float speed;
 
     SDL_FPoint position;
     SDL_FPoint velocity;
 
-    float Angle = 0.0f;
+    // float Angle = 0.0f;
 
-    int Frame = 0;
-    float FrameTimer = 0.0f;
-    float FrameTime = 0.05f;
+    // int Frame = 0;
+    // float FrameTimer = 0.0f;
+    // float FrameTime = 0.05f;
 
-    static SDL_Texture* texture;
-    static int FrameWidth;
-    static int FrameHeight;
+    // static SDL_Texture* texture;
+    // static int FrameWidth;
+    // static int FrameHeight;
 };

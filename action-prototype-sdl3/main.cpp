@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
     // player.LoadGuntexture(renderer, "assets/gun.png");
     // player.LoadFlametexture(renderer, "assets/flame.png");
 
-    Bullet::LoadBullettexture(renderer, "assets/bullet.png");
+    // Bullet::LoadBullettexture(renderer, "assets/bullet.png");
     Enemy::LoadEnemyTexture(renderer, "assets/asteroid.png");
 
     SDL_Texture* titleTex = LoadTexture(renderer, "assets/title.png");
@@ -305,24 +305,25 @@ int main(int argc, char* argv[])
         // firing logic
         bool IsSpacedown = keys[SDL_SCANCODE_SPACE];
 
-       /* if (IsSpacedown && !WasSpaceDown)
+        if (IsSpacedown && !WasSpaceDown)
         {
-            SDL_FPoint gunPos;
+            /*SDL_FPoint gunPos;
 
             if (player.FireLeftNext)
                 gunPos = player.GetLeftGunPos();
             else
                 gunPos = player.GetRightGunPos();
 
-            player.FireLeftNext = !player.FireLeftNext;
+            player.FireLeftNext = !player.FireLeftNext;*/
 
+            float PlayerX = player.getXCenter();
+            float PlayerY = player.getYCenter();
 
-            // direction toward mouse
-            float DirectionX = MouseX - gunPos.x;
-            float DirectionY = MouseY - gunPos.y;
+            float DirectionX = MouseX - PlayerX;
+            float DirectionY = MouseY - PlayerY;
 
-            Bullets.emplace_back(gunPos.x, gunPos.y, DirectionX, DirectionY, 700.0f);
-        } */
+            Bullets.emplace_back(PlayerX, PlayerY, DirectionX, DirectionY, 700.0f);
+        } 
 
         WasSpaceDown = IsSpacedown;
 

@@ -144,6 +144,8 @@ int main(int argc, char* argv[])
 
     // Bullet::LoadBullettexture(renderer, "assets/bullet.png");
     Enemy::LoadEnemyTexture(renderer, "assets/asteroid.png");
+    Enemy::LoadExplosionTexture(renderer, "assets/Asteroid 01 - Explode.png");
+
 
     SDL_Texture* titleTex = LoadTexture(renderer, "assets/title.png");
     SDL_Texture* newGameTex = LoadTexture(renderer, "assets/new_game.png");
@@ -376,16 +378,14 @@ int main(int argc, char* argv[])
                 for (size_t ei = 0; ei < Enemies.size(); )
                 {
                     if (CircleHit(Bullets[bi].GetPos(), Bullets[bi].GetRadius(),
-                        Enemies[ei].GetPos(), Enemies[ei].GetRadius()))
+                        Enemies[ei].GetPos(), Enemies[ei].GetRadius() && Enemies[ei].TriggerExplosion()))
                     {
 
                         Bullets[bi] = Bullets.back();
                         Bullets.pop_back();
 
 
-                        Enemies[ei] = Enemies.back();
-                        Enemies.pop_back();
-
+                        Enemies[ei].TriggerExplosion();
                         Score += 100;
 
                         bulletRemoved = true;
@@ -408,6 +408,14 @@ int main(int argc, char* argv[])
                     [&](const Enemy& e) { return e.isOffScreen(windowWidth, windowHeight); }),
                 Enemies.end()
             );
+
+            // remove enemies that are destroyed
+            Enemies.erase(
+                std::remove_if(Enemies.begin(), Enemies.end(),
+                    [](const Enemy& e) { return e.IsFinished(); }),
+                Enemies.end()
+            );
+
 
 
             // remove bullets off-screen

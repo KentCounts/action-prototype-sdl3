@@ -4,6 +4,8 @@
 #include <cstdlib>
 
 SDL_Texture* Enemy::texture = nullptr;
+SDL_Texture* Enemy::explodeTexture = nullptr;
+
 
 Enemy::Enemy(float x, float y, float VelocityX, float VelocityY, float size)
 {
@@ -23,11 +25,30 @@ void Enemy::LoadEnemyTexture(SDL_Renderer* renderer, const char* path)
     SDL_DestroySurface(surf);
 }
 
+void Enemy::LoadExplosionTexture(SDL_Renderer* renderer, const char* path)
+{
+    SDL_Surface* surf = IMG_Load(path);
+    if (!surf) return;
+
+    explodeTexture = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_DestroySurface(surf);
+}
+
 void Enemy::update(float dt)
 {
+    if (exploding)
+    {
+        explodeTimer += dt;
+        if (explodeTimer >= explodeFrameTime)
+        {
+            explodeTimer -= explodeFrameTime;
+            explodeFrame++;
+        }
+        return;
+    }
+
     position.x += velocity.x * dt;
     position.y += velocity.y * dt;
-
     angle += spinSpeed * dt;
 }
 
@@ -39,6 +60,28 @@ bool Enemy::isOffScreen(int w, int h) const
 
 void Enemy::render(SDL_Renderer* renderer) const
 {
+    if (exploding)
+    {
+        if (!explodeTexture) return;
+
+        SDL_FRect src = {
+            explodeFrame * ExplodeFrameSize,
+            0,
+            ExplodeFrameSize,
+            ExplodeFrameSize
+        };
+
+        SDL_FRect dst = {
+            position.x - size * 0.5f,
+            position.y - size * 0.5f,
+            size,
+            size
+        };
+
+        SDL_RenderTexture(renderer, explodeTexture, &src, &dst);
+        return;
+    }
+
     if (!texture) return;
 
     SDL_FRect dst = {
@@ -48,15 +91,30 @@ void Enemy::render(SDL_Renderer* renderer) const
         size
     };
 
-    float AngleDegrees = angle * 180.0f / 3.14159265f;
+    float angleDeg = angle * 180.0f / 3.14159265f;
 
     SDL_RenderTextureRotated(
         renderer,
         texture,
         nullptr,
         &dst,
-        AngleDegrees,
+        angleDeg,
         nullptr,
         SDL_FLIP_NONE
     );
 }
+
+
+bool Enemy::TriggerExplosion()
+{
+    if (exploding) return false;
+    exploding = true;
+    explodeFrame = 0;
+    explodeTimer = 0.0f;
+}
+
+bool Enemy::IsFinished() const
+{
+    return exploding && explodeFrame >= ExplodeFrameCount;
+}
+

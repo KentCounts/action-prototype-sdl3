@@ -1,8 +1,13 @@
-﻿  main.cpp
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(218,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(224,33): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(224,50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(230,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(236,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(236,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+﻿  Enemy.cpp
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\Enemy.cpp(68,26): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\Enemy.cpp(68,26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(220,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(226,33): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(226,50): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(232,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(238,28): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(238,60): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\Enemy.cpp(114,1): warning C4715: 'Enemy::TriggerExplosion': not all control paths return a value
   action-prototype-sdl3.vcxproj -> C:\Users\Kent\source\repos\action-prototype-sdl3\x64\Debug\action-prototype-sdl3.exe

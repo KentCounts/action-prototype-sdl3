@@ -378,7 +378,8 @@ int main(int argc, char* argv[])
                 for (size_t ei = 0; ei < Enemies.size(); )
                 {
                     if (CircleHit(Bullets[bi].GetPos(), Bullets[bi].GetRadius(),
-                        Enemies[ei].GetPos(), Enemies[ei].GetRadius() && Enemies[ei].TriggerExplosion()))
+                        Enemies[ei].GetPos(), Enemies[ei].GetRadius())
+                        && Enemies[ei].TriggerExplosion())
                     {
 
                         Bullets[bi] = Bullets.back();

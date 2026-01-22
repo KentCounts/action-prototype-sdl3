@@ -21,7 +21,8 @@ bool WasSpaceDown = false;
 enum class GameState
 {
     Title,
-    Playing
+    Playing,
+    Paused
 };
 
 GameState State = GameState::Title;
@@ -136,6 +137,9 @@ int main(int argc, char* argv[])
         return 1;
     }
 
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
+
     Player player(100.0f, 100.0f, 96.0f, 96.0f, 300.0f);
     player.LoadShiptexture(renderer, "assets/ship.png");
     // player.LoadEnginetexture(renderer, "assets/engine.png");
@@ -195,62 +199,15 @@ int main(int argc, char* argv[])
         float DeltaTime = (Current - LastTime) / 1000.0f;
         LastTime = Current;
 
-        bg1.Update(DeltaTime);
-        bg2.Update(DeltaTime);
-        bg3.Update(DeltaTime);
-
-        EnemySpawnTimer += DeltaTime;
-
-        if (EnemySpawnTimer >= EnemySpawnInterval)
-        {
-            EnemySpawnTimer -= EnemySpawnInterval;
-
-            int windowWidth, windowHeight;
-            SDL_GetWindowSize(window, &windowWidth, &windowHeight);
-
-            int side = rand() % 4;
-
-            float x, y, vx, vy;
-            float angleOffset = ((rand() % 60) - 30) * (3.14159265f / 180.0f);
-            float speed = 120.0f;
-
-            switch (side)
-            {
-            case 0:
-                x = -40; y = rand() % windowHeight;
-                vx = SDL_cosf(angleOffset) * speed;
-                vy = SDL_sinf(angleOffset) * speed;
-                break;
-
-            case 1:
-                x = windowWidth + 40; y = rand() % windowHeight;
-                vx = SDL_cosf(3.14159265f + angleOffset) * speed;
-                vy = SDL_sinf(3.14159265f + angleOffset) * speed;
-                break;
-
-            case 2:
-                x = rand() % windowWidth; y = -40;
-                vx = SDL_cosf(1.5707963f + angleOffset) * speed;
-                vy = SDL_sinf(1.5707963f + angleOffset) * speed;
-                break;
-
-            default:
-                x = rand() % windowWidth; y = windowHeight + 40;
-                vx = SDL_cosf(-1.5707963f + angleOffset) * speed;
-                vy = SDL_sinf(-1.5707963f + angleOffset) * speed;
-                break;
-            }
-
-
-            Enemies.emplace_back(x, y, vx, vy, 96.0f);
-        }
-
         // menu buttons
         int windowWidth, windowHeight;
         SDL_GetWindowSize(window, &windowWidth, &windowHeight);
         SDL_FRect NewGameButton = { windowWidth * 0.5f - 150.0f, 300.0f, 300.0f, 60.0f };
         SDL_FRect LeaderButton = { windowWidth * 0.5f - 150.0f, 380.0f, 300.0f, 60.0f };
         SDL_FRect QuitButton = { windowWidth * 0.5f - 150.0f, 460.0f, 300.0f, 60.0f };
+        SDL_FRect PauseContinue = { windowWidth * 0.5f - 150.0f, 300.0f, 300.0f, 60.0f };
+        SDL_FRect PauseSave = { windowWidth * 0.5f - 150.0f, 380.0f, 300.0f, 60.0f };
+        SDL_FRect PauseExit = { windowWidth * 0.5f - 150.0f, 460.0f, 300.0f, 60.0f };
 
 
 
@@ -291,6 +248,33 @@ int main(int argc, char* argv[])
                     {
                         running = false;
                     }
+                }
+
+                if (State == GameState::Paused && event.button.button == SDL_BUTTON_LEFT)
+                {
+                    float mx = event.button.x;
+                    float my = event.button.y;
+
+                    if (PointInRect(mx, my, PauseContinue))
+                    {
+                        State = GameState::Playing;
+                    }
+                    else if (PointInRect(mx, my, PauseSave))
+                    {
+                        // TODO: Save score (no logic yet)
+                    }
+                    else if (PointInRect(mx, my, PauseExit))
+                    {
+                        running = false;
+                    }
+                }
+                break;
+
+            case SDL_EVENT_KEY_DOWN:
+                if (event.key.key == SDLK_ESCAPE)
+                {
+                    if (State == GameState::Playing) State = GameState::Paused;
+                    else if (State == GameState::Paused) State = GameState::Playing;
                 }
                 break;
             }
@@ -344,9 +328,80 @@ int main(int argc, char* argv[])
         bg2.Render(renderer, windowWidth, windowHeight);
         bg3.Render(renderer, windowWidth, windowHeight);
 
+        if (State == GameState::Paused)
+        {
+            SDL_FRect overlay = { 0, 0, (float)windowWidth, (float)windowHeight };
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 140);
+            SDL_RenderFillRect(renderer, &overlay);
+
+            auto DrawButton = [&](const SDL_FRect& r)
+                {
+                    SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
+                    SDL_RenderFillRect(renderer, &r);
+                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+                    SDL_RenderRect(renderer, &r);
+                };
+
+            DrawButton(PauseContinue);
+            DrawButton(PauseSave);
+            DrawButton(PauseExit);
+        }
+
+
 
         if (State == GameState::Playing)
         {
+            bg1.Update(DeltaTime);
+            bg2.Update(DeltaTime);
+            bg3.Update(DeltaTime);
+
+            EnemySpawnTimer += DeltaTime;
+
+            // spawn timer only works while game is not paused
+            if (EnemySpawnTimer >= EnemySpawnInterval)
+            {
+                EnemySpawnTimer -= EnemySpawnInterval;
+
+                int windowWidth, windowHeight;
+                SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+
+                int side = rand() % 4;
+
+                float x, y, vx, vy;
+                float angleOffset = ((rand() % 60) - 30) * (3.14159265f / 180.0f);
+                float speed = 120.0f;
+
+                switch (side)
+                {
+                case 0:
+                    x = -40; y = rand() % windowHeight;
+                    vx = SDL_cosf(angleOffset) * speed;
+                    vy = SDL_sinf(angleOffset) * speed;
+                    break;
+
+                case 1:
+                    x = windowWidth + 40; y = rand() % windowHeight;
+                    vx = SDL_cosf(3.14159265f + angleOffset) * speed;
+                    vy = SDL_sinf(3.14159265f + angleOffset) * speed;
+                    break;
+
+                case 2:
+                    x = rand() % windowWidth; y = -40;
+                    vx = SDL_cosf(1.5707963f + angleOffset) * speed;
+                    vy = SDL_sinf(1.5707963f + angleOffset) * speed;
+                    break;
+
+                default:
+                    x = rand() % windowWidth; y = windowHeight + 40;
+                    vx = SDL_cosf(-1.5707963f + angleOffset) * speed;
+                    vy = SDL_sinf(-1.5707963f + angleOffset) * speed;
+                    break;
+                }
+
+
+                Enemies.emplace_back(x, y, vx, vy, 96.0f);
+            }
+
             // update player
             player.update(DeltaTime, windowWidth, windowHeight, MouseX, MouseY);
 
@@ -456,7 +511,49 @@ int main(int argc, char* argv[])
                 1.0f);                                
         }
 
-        else
+        else if (State == GameState::Paused)
+        {
+            // background update
+            bg1.Update(DeltaTime);
+            bg2.Update(DeltaTime);
+            bg3.Update(DeltaTime);
+
+            // player rendering
+            player.render(renderer);
+
+            // bullet render
+            for (auto& b : Bullets) { b.render(renderer); }
+
+            // enemy render
+            for (const auto& e : Enemies) { e.render(renderer); }
+
+            // score digits
+            SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
+            RenderNumberRightAligned(renderer, digitsTex, digitW, digitH,
+                Score,
+                Scoreboard.x + Scoreboard.w - 15.0f,
+                Scoreboard.y + 15.0f,
+                1.0f);
+
+            // pause overlay
+            SDL_FRect overlay = { 0, 0, (float)windowWidth, (float)windowHeight };
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 140);
+            SDL_RenderFillRect(renderer, &overlay);
+
+            auto DrawButton = [&](const SDL_FRect& r)
+                {
+                    SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
+                    SDL_RenderFillRect(renderer, &r);
+                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+                    SDL_RenderRect(renderer, &r);
+                };
+
+            DrawButton(PauseContinue);
+            DrawButton(PauseSave);
+            DrawButton(PauseExit);
+        }
+
+        else if (State == GameState::Title)
         {
 
             // Draw buttons

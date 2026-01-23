@@ -45,6 +45,10 @@ static SDL_Texture* LoadTexture(SDL_Renderer* renderer, const char* path)
     SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
     SDL_DestroySurface(surf);
 
+    SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(tex, 255);
+    SDL_SetTextureColorMod(tex, 255, 255, 255);
+
     if (!tex) {
         std::cout << "CreateTexture failed: " << path << " error: " << SDL_GetError() << std::endl;
     }
@@ -155,6 +159,11 @@ int main(int argc, char* argv[])
     SDL_Texture* newGameTex = LoadTexture(renderer, "assets/new_game.png");
     SDL_Texture* leaderTex = LoadTexture(renderer, "assets/leaderboards.png");
     SDL_Texture* quitTex = LoadTexture(renderer, "assets/quit.png");
+    SDL_Texture* pauseContinueTex = LoadTexture(renderer, "assets/continue.png");
+    SDL_Texture* pauseSaveTex = LoadTexture(renderer, "assets/save.png");
+    SDL_Texture* pauseQuitTex = LoadTexture(renderer, "assets/quit.png");
+
+
 
     bg1.Load(renderer, "assets/background 1.png", 640, 360, 9);
     bg2.Load(renderer, "assets/background 2.png", 640, 360, 9);
@@ -330,6 +339,8 @@ int main(int argc, char* argv[])
 
         if (State == GameState::Paused)
         {
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
             SDL_FRect overlay = { 0, 0, (float)windowWidth, (float)windowHeight };
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 140);
             SDL_RenderFillRect(renderer, &overlay);
@@ -338,6 +349,7 @@ int main(int argc, char* argv[])
                 {
                     SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
                     SDL_RenderFillRect(renderer, &r);
+
                     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
                     SDL_RenderRect(renderer, &r);
                 };
@@ -345,6 +357,14 @@ int main(int argc, char* argv[])
             DrawButton(PauseContinue);
             DrawButton(PauseSave);
             DrawButton(PauseExit);
+
+            RenderCentered(renderer, pauseContinueTex, PauseContinue);
+            RenderCentered(renderer, pauseSaveTex, PauseSave);
+            RenderCentered(renderer, pauseQuitTex, PauseExit);
+
+            SDL_SetTextureBlendMode(pauseContinueTex, SDL_BLENDMODE_NONE);
+            SDL_SetTextureBlendMode(pauseSaveTex, SDL_BLENDMODE_NONE);
+            SDL_SetTextureBlendMode(pauseQuitTex, SDL_BLENDMODE_NONE);
         }
 
 

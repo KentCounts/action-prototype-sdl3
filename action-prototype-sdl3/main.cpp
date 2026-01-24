@@ -337,51 +337,6 @@ int main(int argc, char* argv[])
         bg2.Render(renderer, windowWidth, windowHeight);
         bg3.Render(renderer, windowWidth, windowHeight);
 
-        if (State == GameState::Paused)
-        {
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            SDL_RenderClear(renderer);
-
-            bg1.Render(renderer, windowWidth, windowHeight);
-            bg2.Render(renderer, windowWidth, windowHeight);
-            bg3.Render(renderer, windowWidth, windowHeight);
-
-            player.render(renderer);
-            for (auto& b : Bullets) { b.render(renderer); }
-            for (const auto& e : Enemies) { e.render(renderer); }
-
-            SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
-            RenderNumberRightAligned(renderer, digitsTex, digitW, digitH,
-                Score,
-                Scoreboard.x + Scoreboard.w - 15.0f,
-                Scoreboard.y + 15.0f,
-                1.0f);
-
-            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-            SDL_FRect overlay = { 0, 0, (float)windowWidth, (float)windowHeight };
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 140);
-            SDL_RenderFillRect(renderer, &overlay);
-
-            auto DrawButton = [&](const SDL_FRect& r)
-                {
-                    SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
-                    SDL_RenderFillRect(renderer, &r);
-                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-                    SDL_RenderRect(renderer, &r);
-                };
-
-            DrawButton(PauseContinue);
-            DrawButton(PauseSave);
-            DrawButton(PauseExit);
-
-            RenderCentered(renderer, pauseContinueTex, PauseContinue);
-            RenderCentered(renderer, pauseSaveTex, PauseSave);
-            RenderCentered(renderer, pauseQuitTex, PauseExit);
-
-            SDL_RenderPresent(renderer);
-        }
-
-
 
         if (State == GameState::Playing)
         {
@@ -545,47 +500,47 @@ int main(int argc, char* argv[])
                 1.0f);                                
         }
 
-        else if (State == GameState::Paused)
-        {
-            // background update
-            bg1.Update(DeltaTime);
-            bg2.Update(DeltaTime);
-            bg3.Update(DeltaTime);
+      else if (State == GameState::Paused)
+      {
+          bg1.Update(DeltaTime);
+          bg2.Update(DeltaTime);
+          bg3.Update(DeltaTime);
 
-            // player rendering
-            player.render(renderer);
+          player.render(renderer);
+          for (auto& b : Bullets) { b.render(renderer); }
+          for (const auto& e : Enemies) { e.render(renderer); }
 
-            // bullet render
-            for (auto& b : Bullets) { b.render(renderer); }
+          SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
+          RenderNumberRightAligned(renderer, digitsTex, digitW, digitH,
+              Score,
+              Scoreboard.x + Scoreboard.w - 15.0f,
+              Scoreboard.y + 15.0f,
+              1.0f);
 
-            // enemy render
-            for (const auto& e : Enemies) { e.render(renderer); }
+          SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+          SDL_FRect overlay = { 0, 0, (float)windowWidth, (float)windowHeight };
 
-            // score digits
-            SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
-            RenderNumberRightAligned(renderer, digitsTex, digitW, digitH,
-                Score,
-                Scoreboard.x + Scoreboard.w - 15.0f,
-                Scoreboard.y + 15.0f,
-                1.0f);
+          SDL_SetRenderDrawColor(renderer, 0, 0, 0, 90);
+          SDL_RenderFillRect(renderer, &overlay);
 
-            // pause overlay
-            SDL_FRect overlay = { 0, 0, (float)windowWidth, (float)windowHeight };
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 140);
-            SDL_RenderFillRect(renderer, &overlay);
+          auto DrawButton = [&](const SDL_FRect& r)
+              {
+                  SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
+                  SDL_RenderFillRect(renderer, &r);
+                  SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+                  SDL_RenderRect(renderer, &r);
+              };
 
-            auto DrawButton = [&](const SDL_FRect& r)
-                {
-                    SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
-                    SDL_RenderFillRect(renderer, &r);
-                    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-                    SDL_RenderRect(renderer, &r);
-                };
+          DrawButton(PauseContinue);
+          DrawButton(PauseSave);
+          DrawButton(PauseExit);
 
-            DrawButton(PauseContinue);
-            DrawButton(PauseSave);
-            DrawButton(PauseExit);
-        }
+          RenderCentered(renderer, pauseContinueTex, PauseContinue);
+          RenderCentered(renderer, pauseSaveTex, PauseSave);
+          RenderCentered(renderer, pauseQuitTex, PauseExit);
+
+}
+
 
         else if (State == GameState::Title)
         {
@@ -619,7 +574,6 @@ int main(int argc, char* argv[])
         }
 
 
-        // Present the window thing?
         SDL_RenderPresent(renderer);
     }
 

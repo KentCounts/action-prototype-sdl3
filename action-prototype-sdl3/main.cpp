@@ -339,8 +339,25 @@ int main(int argc, char* argv[])
 
         if (State == GameState::Paused)
         {
-            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+            SDL_RenderClear(renderer);
 
+            bg1.Render(renderer, windowWidth, windowHeight);
+            bg2.Render(renderer, windowWidth, windowHeight);
+            bg3.Render(renderer, windowWidth, windowHeight);
+
+            player.render(renderer);
+            for (auto& b : Bullets) { b.render(renderer); }
+            for (const auto& e : Enemies) { e.render(renderer); }
+
+            SDL_FRect Scoreboard = { windowWidth - 150.0f, 20.0f, 120.0f, 40.0f };
+            RenderNumberRightAligned(renderer, digitsTex, digitW, digitH,
+                Score,
+                Scoreboard.x + Scoreboard.w - 15.0f,
+                Scoreboard.y + 15.0f,
+                1.0f);
+
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
             SDL_FRect overlay = { 0, 0, (float)windowWidth, (float)windowHeight };
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 140);
             SDL_RenderFillRect(renderer, &overlay);
@@ -349,7 +366,6 @@ int main(int argc, char* argv[])
                 {
                     SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
                     SDL_RenderFillRect(renderer, &r);
-
                     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
                     SDL_RenderRect(renderer, &r);
                 };
@@ -362,9 +378,7 @@ int main(int argc, char* argv[])
             RenderCentered(renderer, pauseSaveTex, PauseSave);
             RenderCentered(renderer, pauseQuitTex, PauseExit);
 
-            SDL_SetTextureBlendMode(pauseContinueTex, SDL_BLENDMODE_NONE);
-            SDL_SetTextureBlendMode(pauseSaveTex, SDL_BLENDMODE_NONE);
-            SDL_SetTextureBlendMode(pauseQuitTex, SDL_BLENDMODE_NONE);
+            SDL_RenderPresent(renderer);
         }
 
 

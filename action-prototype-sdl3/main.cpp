@@ -199,7 +199,11 @@ int main(int argc, char* argv[])
 
     Uint64 LastTime = SDL_GetTicks();
     float EnemySpawnTimer = 0.0f;
-    const float EnemySpawnInterval = 1.5f; // seconds
+
+    const float BaseSpawnInterval = 1.5f;
+    float EnemySpawnInterval = BaseSpawnInterval;
+
+    float ElapsedPlayTime = 0.0f;
 
 
     while (running)
@@ -237,14 +241,12 @@ int main(int argc, char* argv[])
 
                     if (PointInRect(mx, my, NewGameButton))
                     {
-                        // Reset game state
                         Bullets.clear();
                         Enemies.clear();
-                        EnemySpawnTimer = 0.0f;
 
-                        // Put player back where you want
-                        // (If your Player class has a setter, use it; otherwise reconstruct)
-                        // Example: player.SetPosition(100,100);
+                        EnemySpawnTimer = 0.0f;
+                        ElapsedPlayTime = 0.0f;
+                        EnemySpawnInterval = BaseSpawnInterval;
 
                         State = GameState::Playing;
                         Score = 0;
@@ -345,6 +347,15 @@ int main(int argc, char* argv[])
             bg3.Update(DeltaTime);
 
             EnemySpawnTimer += DeltaTime;
+            ElapsedPlayTime += DeltaTime;
+
+            EnemySpawnInterval = BaseSpawnInterval - (0.01f * ElapsedPlayTime);
+
+            if (EnemySpawnInterval < 0.3f)
+            {
+                EnemySpawnInterval = 0.3f;
+            }
+
 
             // spawn timer only works while game is not paused
             if (EnemySpawnTimer >= EnemySpawnInterval)

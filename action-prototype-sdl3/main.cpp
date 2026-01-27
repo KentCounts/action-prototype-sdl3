@@ -18,6 +18,8 @@ int Score = 0;
 
 bool WasSpaceDown = false;
 
+const float PlayerCollisionRadius = 44.0f;
+
 enum class GameState
 {
     Title,
@@ -455,6 +457,18 @@ int main(int argc, char* argv[])
 
                 if (!bulletRemoved)
                     ++bi;
+            }
+
+            // player enemy colision
+            SDL_FPoint pPos = { player.getXCenter(), player.getYCenter() };
+            float pRad = PlayerCollisionRadius;
+
+            for (auto& e : Enemies)
+            {
+                if (CircleHit(pPos, pRad, e.GetPos(), e.GetRadius()))
+                {
+                    e.TriggerExplosion();
+                }
             }
 
 

@@ -3,6 +3,31 @@
 #include <SDL3_image/SDL_image.h>
 #include <iostream>
 
+void Player::ResetHealth(int maxHp)
+{
+    if (maxHp < 1) maxHp = 1;
+    maxHealth = maxHp;
+    health = maxHp;
+
+    hitCooldown = 0.0f;
+}
+
+bool Player::TakeHit(int dmg)
+{
+    if (dmg <= 0) return false;
+    if (health <= 0) return false;
+
+    // i frames
+    if (hitCooldown > 0.0f) return false;
+
+    health -= dmg;
+    if (health < 0) health = 0;
+
+    hitCooldown = hitCooldownDuration;
+
+    return true;
+}
+
 
 Player::Player(float Xaxis, float Yaxis, float width, float height, float speed)
 {
@@ -13,7 +38,11 @@ Player::Player(float Xaxis, float Yaxis, float width, float height, float speed)
 void Player::update(float DeltaTime, int windowWidth, int windowHeight, float MouseX, float MouseY)
 {
 
-
+    if (hitCooldown > 0.0f)
+    {
+        hitCooldown -= DeltaTime;
+        if (hitCooldown < 0.0f) hitCooldown = 0.0f;
+    }
     
     const bool* keys = SDL_GetKeyboardState(nullptr);
 

@@ -24,6 +24,16 @@ public:
 
     // bool FireLeftNext = true;
 
+    void ResetHealth(int maxHp = 4);
+    bool TakeHit(int dmg = 1);              
+    void Tick(float dt);                    
+    int  GetHealth() const { return health; }
+    int  GetMaxHealth() const { return maxHealth; }
+    bool IsDead() const { return health <= 0; }
+
+    // Collision helper (keeps rect private)
+    float GetCollisionRadius(float tightness = 0.85f) const;
+
 
 private:
     SDL_FRect rect;
@@ -61,5 +71,12 @@ private:
     // float flameOffsetX = -10.0f;
     // float flameOffsetY = 0.0f;
     // float flameScale = 1.0f;
+
+    // Health 
+    int health = 4;
+    int maxHealth = 4;
+
+    float hitCooldown = 0.0f;
+    float hitCooldownDuration = 0.6f;
 
 };

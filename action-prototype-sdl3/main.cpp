@@ -24,7 +24,8 @@ enum class GameState
 {
     Title,
     Playing,
-    Paused
+    Paused,
+    GameOver
 };
 
 GameState State = GameState::Title;
@@ -148,6 +149,7 @@ int main(int argc, char* argv[])
 
     Player player(100.0f, 100.0f, 96.0f, 96.0f, 300.0f);
     player.LoadShiptexture(renderer, "assets/ship.png");
+    player.ResetHealth(4);
     // player.LoadEnginetexture(renderer, "assets/engine.png");
     // player.LoadGuntexture(renderer, "assets/gun.png");
     // player.LoadFlametexture(renderer, "assets/flame.png");
@@ -245,6 +247,8 @@ int main(int argc, char* argv[])
                     {
                         Bullets.clear();
                         Enemies.clear();
+                        player.ResetHealth(4);
+
 
                         EnemySpawnTimer = 0.0f;
                         ElapsedPlayTime = 0.0f;
@@ -301,30 +305,35 @@ int main(int argc, char* argv[])
         float MouseX, MouseY;
         SDL_GetMouseState(&MouseX, &MouseY);
 
-        // firing logic
-        bool IsSpacedown = keys[SDL_SCANCODE_SPACE];
+        if (State == GameState::Playing) {
 
-        if (IsSpacedown && !WasSpaceDown)
-        {
-            /*SDL_FPoint gunPos;
+            // firing logic
+            bool IsSpacedown = keys[SDL_SCANCODE_SPACE];
 
-            if (player.FireLeftNext)
-                gunPos = player.GetLeftGunPos();
-            else
-                gunPos = player.GetRightGunPos();
+            if (IsSpacedown && !WasSpaceDown)
+            {
+                /*SDL_FPoint gunPos;
 
-            player.FireLeftNext = !player.FireLeftNext;*/
+                if (player.FireLeftNext)
+                    gunPos = player.GetLeftGunPos();
+                else
+                    gunPos = player.GetRightGunPos();
 
-            float PlayerX = player.getXCenter();
-            float PlayerY = player.getYCenter();
+                player.FireLeftNext = !player.FireLeftNext;*/
 
-            float DirectionX = MouseX - PlayerX;
-            float DirectionY = MouseY - PlayerY;
+                float PlayerX = player.getXCenter();
+                float PlayerY = player.getYCenter();
 
-            Bullets.emplace_back(PlayerX, PlayerY, DirectionX, DirectionY, 700.0f);
-        } 
+                float DirectionX = MouseX - PlayerX;
+                float DirectionY = MouseY - PlayerY;
 
-        WasSpaceDown = IsSpacedown;
+                Bullets.emplace_back(PlayerX, PlayerY, DirectionX, DirectionY, 700.0f);
+            }
+
+        }
+
+            WasSpaceDown = keys[SDL_SCANCODE_SPACE];
+
 
         
 
@@ -468,7 +477,14 @@ int main(int argc, char* argv[])
                 if (CircleHit(pPos, pRad, e.GetPos(), e.GetRadius()))
                 {
                     e.TriggerExplosion();
+                    player.TakeHit(1);
+                    break;
                 }
+            }
+
+            if (player.IsDead())
+            {
+                State = GameState::Title;
             }
 
 

@@ -148,7 +148,11 @@ int main(int argc, char* argv[])
 
 
     Player player(100.0f, 100.0f, 96.0f, 96.0f, 300.0f);
-    player.LoadShiptexture(renderer, "assets/ship.png");
+    player.LoadShipTextures(renderer,
+        "assets/ship1.png",
+        "assets/ship2.png",
+        "assets/ship3.png",
+        "assets/ship4.png");    
     player.ResetHealth(4);
     // player.LoadEnginetexture(renderer, "assets/engine.png");
     // player.LoadGuntexture(renderer, "assets/gun.png");

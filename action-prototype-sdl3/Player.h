@@ -11,7 +11,11 @@ public:
     float getXCenter() const { return rect.x + rect.w / 2; }
     float getYCenter() const { return rect.y + rect.h / 2; }
 
-    void LoadShiptexture(SDL_Renderer* renderer, const char* path);
+    void LoadShipTextures(SDL_Renderer* renderer,
+        const char* ship1,
+        const char* ship2,
+        const char* ship3,
+        const char* ship4);
 
     // void LoadEnginetexture(SDL_Renderer* renderer, const char* path);
     // void LoadGuntexture(SDL_Renderer* renderer, const char* path);
@@ -42,6 +46,14 @@ private:
     float velocityY = 0.0f;
 
     SDL_Texture* Shiptexture = nullptr;
+
+    void UpdateShipTexture();
+
+    SDL_Texture* Ship1 = nullptr;
+    SDL_Texture* Ship2 = nullptr;
+    SDL_Texture* Ship3 = nullptr;
+    SDL_Texture* Ship4 = nullptr;
+
     // SDL_Texture* Enginetexture = nullptr;
     // SDL_Texture* Guntexture = nullptr;
     // SDL_Texture* Flametexture = nullptr;
@@ -79,4 +91,5 @@ private:
     float hitCooldown = 0.0f;
     float hitCooldownDuration = 0.6f;
 
+    int lastHealthForSprite = 4;
 };

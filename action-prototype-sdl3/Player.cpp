@@ -9,6 +9,10 @@ void Player::ResetHealth(int maxHp)
     maxHealth = maxHp;
     health = maxHp;
 
+    lastHealthForSprite = health;
+    UpdateShipTexture();
+
+
     hitCooldown = 0.0f;
 }
 
@@ -23,9 +27,72 @@ bool Player::TakeHit(int dmg)
     health -= dmg;
     if (health < 0) health = 0;
 
+    if (health != lastHealthForSprite)
+    {
+        lastHealthForSprite = health;
+        UpdateShipTexture();
+
+    }
+
     hitCooldown = hitCooldownDuration;
 
     return true;
+}
+
+void Player::UpdateShipTexture()
+{
+    switch (health)
+    {
+    case 4:
+        Shiptexture = Ship1;
+        break;
+    case 3:
+        Shiptexture = Ship2;
+        break;
+    case 2:
+        Shiptexture = Ship3;
+        break;
+    case 1:
+        Shiptexture = Ship4;
+        break;
+    default:
+        Shiptexture = Ship4; // dead / fallback
+        break;
+    }
+}
+
+static SDL_Texture* PickShipTexture(int health,
+    SDL_Texture* ship1,
+    SDL_Texture* ship2,
+    SDL_Texture* ship3,
+    SDL_Texture* ship4)
+{
+    switch (health)
+    {
+    case 4: return ship1;
+    case 3: return ship2;
+    case 2: return ship3;
+    case 1: return ship4;
+    default: return ship4;
+    }
+}
+
+static SDL_Texture* LoadTexture(SDL_Renderer* renderer, const char* path)
+{
+    SDL_Surface* surf = IMG_Load(path);
+    if (!surf)
+    {
+        std::cout << "IMG_Load Error: " << SDL_GetError() << " path=" << path << std::endl;
+        return nullptr;
+    }
+
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_DestroySurface(surf);
+
+    if (!tex)
+        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << " path=" << path << std::endl;
+
+    return tex;
 }
 
 
@@ -119,20 +186,19 @@ void Player::update(float DeltaTime, int windowWidth, int windowHeight, float Mo
 
 }
 
-void Player::LoadShiptexture(SDL_Renderer* renderer, const char* path)
+void Player::LoadShipTextures(SDL_Renderer* renderer,
+    const char* ship1,
+    const char* ship2,
+    const char* ship3,
+    const char* ship4)
 {
-    SDL_Surface* surf = IMG_Load(path);
-    if (!surf) {
-        std::cout << "IMG_Load Error: " << SDL_GetError() << std::endl;
-        return;
-    }
+    Ship1 = LoadTexture(renderer, ship1);
+    Ship2 = LoadTexture(renderer, ship2);
+    Ship3 = LoadTexture(renderer, ship3);
+    Ship4 = LoadTexture(renderer, ship4);
 
-    Shiptexture = SDL_CreateTextureFromSurface(renderer, surf);
-    SDL_DestroySurface(surf);
-
-    if (!Shiptexture) {
-        std::cout << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-    }
+    // Default to full-health appearance
+    Shiptexture = Ship1;
 }
 
 /* void Player::LoadEnginetexture(SDL_Renderer* renderer, const char* path)

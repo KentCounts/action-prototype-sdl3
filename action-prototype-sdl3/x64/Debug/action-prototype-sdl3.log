@@ -1,8 +1,3 @@
-﻿  main.cpp
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(388,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(394,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(394,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(400,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(406,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(406,64): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+﻿  Player.cpp
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\Player.cpp(289,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   action-prototype-sdl3.vcxproj -> C:\Users\Kent\source\repos\action-prototype-sdl3\x64\Debug\action-prototype-sdl3.exe

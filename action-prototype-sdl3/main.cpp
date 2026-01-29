@@ -229,6 +229,9 @@ int main(int argc, char* argv[])
         SDL_FRect PauseContinue = { windowWidth * 0.5f - 150.0f, 300.0f, 300.0f, 60.0f };
         SDL_FRect PauseSave = { windowWidth * 0.5f - 150.0f, 380.0f, 300.0f, 60.0f };
         SDL_FRect PauseExit = { windowWidth * 0.5f - 150.0f, 460.0f, 300.0f, 60.0f };
+        SDL_FRect GameOverSave = { windowWidth * 0.5f - 150.0f, 300.0f, 300.0f, 60.0f };
+        SDL_FRect GameOverNew = { windowWidth * 0.5f - 150.0f, 380.0f, 300.0f, 60.0f };
+        SDL_FRect GameOverQuit = { windowWidth * 0.5f - 150.0f, 460.0f, 300.0f, 60.0f };
 
 
 
@@ -289,6 +292,34 @@ int main(int argc, char* argv[])
                         running = false;
                     }
                 }
+
+                if (State == GameState::GameOver && event.button.button == SDL_BUTTON_LEFT)
+                {
+                    float mx = event.button.x;
+                    float my = event.button.y;
+
+                    if (PointInRect(mx, my, GameOverSave))
+                    {
+                        // TODO: save score later
+                    }
+                    else if (PointInRect(mx, my, GameOverNew))
+                    {
+                        // Reset game
+                        Bullets.clear();
+                        Enemies.clear();
+                        EnemySpawnTimer = 0.0f;
+
+                        player.ResetHealth(4);
+                        Score = 0;
+
+                        State = GameState::Playing;
+                    }
+                    else if (PointInRect(mx, my, GameOverQuit))
+                    {
+                        running = false;
+                    }
+                }
+
                 break;
 
             case SDL_EVENT_KEY_DOWN:
@@ -488,7 +519,7 @@ int main(int argc, char* argv[])
 
             if (player.IsDead())
             {
-                State = GameState::Title;
+                State = GameState::GameOver;
             }
 
 
@@ -584,8 +615,44 @@ int main(int argc, char* argv[])
           RenderCentered(renderer, pauseSaveTex, PauseSave);
           RenderCentered(renderer, pauseQuitTex, PauseExit);
 
-}
+      }
 
+      else if (State == GameState::GameOver)
+      {
+          float mx, my;
+          SDL_GetMouseState(&mx, &my);
+
+          auto DrawButton = [&](const SDL_FRect& r)
+              {
+                  bool hover = PointInRect(mx, my, r);
+
+                  if (hover) SDL_SetRenderDrawColor(renderer, 90, 90, 90, 220);
+                  else       SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
+
+                  SDL_RenderFillRect(renderer, &r);
+
+                  SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+                  SDL_RenderRect(renderer, &r);
+              };
+
+          // Title placeholder (until asset exists)
+          SDL_FRect titleBox = {
+              windowWidth * 0.5f - 250.0f,
+              140.0f,
+              500.0f,
+              90.0f
+          };
+
+          SDL_SetRenderDrawColor(renderer, 40, 40, 40, 220);
+          SDL_RenderFillRect(renderer, &titleBox);
+          SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
+          SDL_RenderRect(renderer, &titleBox);
+
+          // Buttons
+          DrawButton(GameOverSave);
+          DrawButton(GameOverNew);
+          DrawButton(GameOverQuit);
+      }
 
         else if (State == GameState::Title)
         {

@@ -652,6 +652,10 @@ int main(int argc, char* argv[])
           DrawButton(GameOverSave);
           DrawButton(GameOverNew);
           DrawButton(GameOverQuit);
+
+          RenderCentered(renderer, pauseSaveTex, GameOverSave);
+          RenderCentered(renderer, newGameTex, GameOverNew);
+          RenderCentered(renderer, quitTex, GameOverQuit);
       }
 
         else if (State == GameState::Title)

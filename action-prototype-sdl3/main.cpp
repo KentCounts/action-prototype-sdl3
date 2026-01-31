@@ -170,6 +170,8 @@ int main(int argc, char* argv[])
     SDL_Texture* pauseContinueTex = LoadTexture(renderer, "assets/continue.png");
     SDL_Texture* pauseSaveTex = LoadTexture(renderer, "assets/save.png");
     SDL_Texture* pauseQuitTex = LoadTexture(renderer, "assets/quit.png");
+    SDL_Texture* gameOverTex = LoadTexture(renderer, "assets/gameover.png");
+
 
 
 
@@ -635,18 +637,17 @@ int main(int argc, char* argv[])
                   SDL_RenderRect(renderer, &r);
               };
 
-          // Title placeholder (until asset exists)
-          SDL_FRect titleBox = {
-              windowWidth * 0.5f - 250.0f,
-              140.0f,
-              500.0f,
-              90.0f
-          };
+          if (gameOverTex)
+          {
+              SDL_FRect gameOverDst = {
+                  windowWidth * 0.5f - 300.0f,
+                  130.0f,                    
+                  600.0f,                    
+                  120.0f                      
+              };
 
-          SDL_SetRenderDrawColor(renderer, 40, 40, 40, 220);
-          SDL_RenderFillRect(renderer, &titleBox);
-          SDL_SetRenderDrawColor(renderer, 220, 220, 220, 255);
-          SDL_RenderRect(renderer, &titleBox);
+              SDL_RenderTexture(renderer, gameOverTex, nullptr, &gameOverDst);
+          }
 
           // Buttons
           DrawButton(GameOverSave);

@@ -8,6 +8,7 @@
 #include <SDL3_image/SDL_image.h>
 #include "Enemy.h"
 #include "BackgroundLayer.h"
+#include "Leaderboard.h"
 
 std::vector<Bullet> Bullets;
 std::vector<Enemy> Enemies;
@@ -25,7 +26,8 @@ enum class GameState
     Title,
     Playing,
     Paused,
-    GameOver
+    GameOver,
+    Leaderboard
 };
 
 GameState State = GameState::Title;
@@ -148,6 +150,8 @@ int main(int argc, char* argv[])
 
 
     Player player(100.0f, 100.0f, 96.0f, 96.0f, 300.0f);
+    Leaderboard leaderboard;
+    leaderboard.Load("assets/leaderboard.txt");
     player.LoadShipTextures(renderer,
         "assets/ship1.png",
         "assets/ship2.png",
@@ -268,7 +272,7 @@ int main(int argc, char* argv[])
                     }
                     else if (PointInRect(mx, my, LeaderButton))
                     {
-                        // placeholder: do nothing for now
+                        State = GameState::Leaderboard;
                     }
                     else if (PointInRect(mx, my, QuitButton))
                     {
@@ -329,6 +333,8 @@ int main(int argc, char* argv[])
                 {
                     if (State == GameState::Playing) State = GameState::Paused;
                     else if (State == GameState::Paused) State = GameState::Playing;
+                    else if (State == GameState::Leaderboard) State = GameState::Title;
+                    else if (State == GameState::GameOver) State = GameState::Title;
                 }
                 break;
             }
@@ -659,7 +665,7 @@ int main(int argc, char* argv[])
           RenderCentered(renderer, quitTex, GameOverQuit);
       }
 
-        else if (State == GameState::Title)
+      else if (State == GameState::Title)
         {
 
             // Draw buttons
@@ -689,6 +695,13 @@ int main(int argc, char* argv[])
             RenderCentered(renderer, quitTex, QuitButton);
 
         }
+
+      else if (State == GameState::Leaderboard)
+      {
+
+          leaderboard.Render(renderer, digitsTex, digitW, digitH,
+              windowWidth, windowHeight, 10);
+}
 
 
         SDL_RenderPresent(renderer);

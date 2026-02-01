@@ -1,8 +1,8 @@
 ﻿  main.cpp
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(425,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(431,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(431,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(437,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(431,41): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(437,37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(437,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(443,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(443,64): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(449,32): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\Kent\source\repos\action-prototype-sdl3\action-prototype-sdl3\main.cpp(449,64): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   action-prototype-sdl3.vcxproj -> C:\Users\Kent\source\repos\action-prototype-sdl3\x64\Debug\action-prototype-sdl3.exe

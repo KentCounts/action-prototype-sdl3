@@ -135,6 +135,8 @@ int main(int argc, char* argv[])
         1280, 720,
         0
     );
+
+    bool ScoreSavedThisRun = false;
     
   
     // Create a GPU renderer
@@ -269,9 +271,11 @@ int main(int argc, char* argv[])
 
                         State = GameState::Playing;
                         Score = 0;
+                        ScoreSavedThisRun = false;
                     }
                     else if (PointInRect(mx, my, LeaderButton))
                     {
+                        leaderboard.Load("assets/leaderboard.txt");
                         State = GameState::Leaderboard;
                     }
                     else if (PointInRect(mx, my, QuitButton))
@@ -306,7 +310,13 @@ int main(int argc, char* argv[])
 
                     if (PointInRect(mx, my, GameOverSave))
                     {
-                        // TODO: save score later
+                        {
+                            leaderboard.AddScore(Score);
+                            leaderboard.Save("assets/leaderboard.txt");
+                            ScoreSavedThisRun = true;
+                        }
+
+                        State = GameState::Leaderboard;
                     }
                     else if (PointInRect(mx, my, GameOverNew))
                     {
@@ -317,6 +327,7 @@ int main(int argc, char* argv[])
 
                         player.ResetHealth(4);
                         Score = 0;
+                        ScoreSavedThisRun = false;
 
                         State = GameState::Playing;
                     }
@@ -527,6 +538,13 @@ int main(int argc, char* argv[])
 
             if (player.IsDead())
             {
+                if (!ScoreSavedThisRun)
+                {
+                    leaderboard.AddScore(Score);
+                    leaderboard.Save("assets/leaderboard.txt");
+                    ScoreSavedThisRun = true;
+                }
+
                 State = GameState::GameOver;
             }
 

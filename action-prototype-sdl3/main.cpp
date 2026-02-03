@@ -625,10 +625,18 @@ int main(int argc, char* argv[])
           SDL_SetRenderDrawColor(renderer, 0, 0, 0, 90);
           SDL_RenderFillRect(renderer, &overlay);
 
+          float mx, my;
+          SDL_GetMouseState(&mx, &my);
+
           auto DrawButton = [&](const SDL_FRect& r)
               {
-                  SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
+                  bool hover = PointInRect(mx, my, r);
+
+                  if (hover) SDL_SetRenderDrawColor(renderer, 90, 90, 90, 220);
+                  else       SDL_SetRenderDrawColor(renderer, 60, 60, 60, 220);
+
                   SDL_RenderFillRect(renderer, &r);
+
                   SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
                   SDL_RenderRect(renderer, &r);
               };

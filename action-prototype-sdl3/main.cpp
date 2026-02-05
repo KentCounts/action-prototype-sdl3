@@ -9,9 +9,14 @@
 #include "Enemy.h"
 #include "BackgroundLayer.h"
 #include "Leaderboard.h"
+#include <algorithm>
+#include "Powerup.h"
 
 std::vector<Bullet> Bullets;
 std::vector<Enemy> Enemies;
+std::vector<PowerUp> PowerUps;
+
+Loadout playerLoadout;
 
 BackgroundLayer bg1, bg2, bg3;
 
@@ -264,6 +269,8 @@ int main(int argc, char* argv[])
                         Enemies.clear();
                         player.ResetHealth(4);
 
+                        PowerUps.clear();
+                        playerLoadout = Loadout{};
 
                         EnemySpawnTimer = 0.0f;
                         ElapsedPlayTime = 0.0f;
@@ -324,6 +331,9 @@ int main(int argc, char* argv[])
                         Bullets.clear();
                         Enemies.clear();
                         EnemySpawnTimer = 0.0f;
+
+                        PowerUps.clear();
+                        playerLoadout = Loadout{};
 
                         player.ResetHealth(4);
                         Score = 0;

@@ -357,6 +357,22 @@ int main(int argc, char* argv[])
                     else if (State == GameState::Leaderboard) State = GameState::Title;
                     else if (State == GameState::GameOver) State = GameState::Title;
                 }
+
+                if (State == GameState::Playing)
+                {
+                    float mx, my;
+                    SDL_GetMouseState(&mx, &my);
+
+                    if (event.key.key == SDLK_1)
+                        PowerUps.emplace_back(PowerUpCategory::Engine, mx - 24.0f, my - 24.0f);
+
+                    if (event.key.key == SDLK_2)
+                        PowerUps.emplace_back(PowerUpCategory::Weapon, mx - 24.0f, my - 24.0f);
+
+                    if (event.key.key == SDLK_3)
+                        PowerUps.emplace_back(PowerUpCategory::Shield, mx - 24.0f, my - 24.0f);
+                }
+                
                 break;
             }
         }
@@ -477,8 +493,35 @@ int main(int argc, char* argv[])
                 Enemies.emplace_back(x, y, vx, vy, 96.0f);
             }
 
+
+            for (const auto& p : PowerUps)
+            {
+                p.Render(renderer);
+            }
+
             // update player
             player.update(DeltaTime, windowWidth, windowHeight, MouseX, MouseY);
+
+            for (size_t i = 0; i < PowerUps.size(); )
+            {
+                if (PowerUps[i].Intersects(player.GetRect()))
+                {
+                    PowerUps[i].ApplyTo(playerLoadout);
+
+                    std::cout << "Loadout tiers => "
+                        << "Engine: " << playerLoadout.engineTier
+                        << " Weapon: " << playerLoadout.weaponTier
+                        << " Shield: " << playerLoadout.shieldTier
+                        << std::endl;
+
+                    PowerUps[i] = PowerUps.back();
+                    PowerUps.pop_back();
+                }
+                else
+                {
+                    ++i;
+                }
+            }
 
             //update bullets
             for (auto& b : Bullets)
@@ -490,6 +533,11 @@ int main(int argc, char* argv[])
             for (auto& e : Enemies)
             {
                 e.update(DeltaTime);
+            }
+
+            for (auto& p : PowerUps)
+            {
+                p.Update(DeltaTime);
             }
 
             auto CircleHit = [](SDL_FPoint a, float ar, SDL_FPoint b, float br) -> bool

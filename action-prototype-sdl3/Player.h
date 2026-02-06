@@ -11,6 +11,9 @@ public:
     float getXCenter() const { return rect.x + rect.w / 2; }
     float getYCenter() const { return rect.y + rect.h / 2; }
 
+    SDL_FRect GetRect() const { return rect; }
+
+
     void LoadShipTextures(SDL_Renderer* renderer,
         const char* ship1,
         const char* ship2,
